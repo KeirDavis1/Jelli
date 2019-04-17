@@ -1,8 +1,10 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Jelli.ConsoleApp.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Jelli.ConsoleApp.Services;
+using Jelli.Data;
 using System;
 using System.Threading.Tasks;
 
@@ -55,6 +57,7 @@ namespace Jelli.ConsoleApp
 					.AddSingleton<DiscordSocketClient>()
 					.AddSingleton<CommandService>()
 					.AddSingleton<CommandHandlingService>()
+					.AddDbContext<BotContext>(ServiceLifetime.Transient)
 					.BuildServiceProvider();
 		}
 		#endregion
