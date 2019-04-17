@@ -5,12 +5,12 @@ namespace Jelli.Data.Repositories.Interfaces
 {
 	public interface IGuildRepository
 	{
-		Task<Guild> GetGuild(ulong guildId);
+		Task<Guild> GetGuildAsync(ulong guildId);
 
-		Task<Guild> CreateGuild(Guild guild);
+		Task<Guild> CreateGuildAsync(Guild guild);
 
-		Task<Guild> DeleteGuild(ulong guildId);
+		Task<Guild> DeleteGuildAsync(ulong guildId);
 
-		Task<Guild> UpdateGuild(Guild guild);
+		Task<Guild> UpdateGuildAsync(Guild guild);
 	}
 }

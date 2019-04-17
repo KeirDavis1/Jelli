@@ -18,22 +18,22 @@ namespace Jelli.Data.Repositories
 		#endregion
 
 		#region Methods
-		public Task<Guild> CreateGuild(Guild guild)
+		public Task<Guild> CreateGuildAsync(Guild guild)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public Task<Guild> DeleteGuild(ulong guildId)
+		public Task<Guild> DeleteGuildAsync(ulong guildId)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public Task<Guild> GetGuild(ulong guildId)
+		public Task<Guild> GetGuildAsync(ulong guildId)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public Task<Guild> UpdateGuild(Guild guild)
+		public Task<Guild> UpdateGuildAsync(Guild guild)
 		{
 			throw new System.NotImplementedException();
 		}
