@@ -7,6 +7,10 @@ using Jelli.ConsoleApp.Services;
 using Jelli.Data;
 using System;
 using System.Threading.Tasks;
+using Jelli.Data.Repositories.Interfaces;
+using Jelli.Data.Services.Interfaces;
+using Jelli.Data.Repositories;
+using Jelli.Data.Services;
 
 namespace Jelli.ConsoleApp
 {
@@ -58,6 +62,8 @@ namespace Jelli.ConsoleApp
 					.AddSingleton<CommandService>()
 					.AddSingleton<CommandHandlingService>()
 					.AddDbContext<BotContext>(ServiceLifetime.Transient)
+					.AddScoped<IGuildRepository, GuildRepository>()
+					.AddScoped<IGuildService, GuildService>()
 					.BuildServiceProvider();
 		}
 		#endregion
