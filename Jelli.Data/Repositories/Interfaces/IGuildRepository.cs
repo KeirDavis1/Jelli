@@ -1,15 +1,16 @@
+using System.Threading.Tasks;
 using Jelli.Data.Models;
 
 namespace Jelli.Data.Repositories.Interfaces
 {
 	public interface IGuildRepository
 	{
-		Guild GetGuild(ulong guildId);
+		Task<Guild> GetGuild(ulong guildId);
 
-		Guild CreateGuild(Guild guild);
+		Task<Guild> CreateGuild(Guild guild);
 
-		Guild DeleteGuild(ulong guildId);
+		Task<Guild> DeleteGuild(ulong guildId);
 
-		Guild UpdateGuild(Guild guild);
+		Task<Guild> UpdateGuild(Guild guild);
 	}
 }

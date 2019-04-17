@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Jelli.Data.Models;
 using Jelli.Data.Repositories.Interfaces;
 
@@ -17,22 +18,22 @@ namespace Jelli.Data.Repositories
 		#endregion
 
 		#region Methods
-		public Guild CreateGuild(Guild guild)
+		public Task<Guild> CreateGuild(Guild guild)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public Guild DeleteGuild(ulong guildId)
+		public Task<Guild> DeleteGuild(ulong guildId)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public Guild GetGuild(ulong guildId)
+		public Task<Guild> GetGuild(ulong guildId)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public Guild UpdateGuild(Guild guild)
+		public Task<Guild> UpdateGuild(Guild guild)
 		{
 			throw new System.NotImplementedException();
 		}
