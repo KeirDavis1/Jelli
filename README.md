@@ -28,7 +28,7 @@ Commands are listed like the following:
 
   `!ban <user> <reason*>`
 
-  The bot will ban the `<user>` and associate the `<reason*>` for the ban with it.
+  *The bot will ban the `<user>` and associate the `<reason*>` for the ban with it.*
 
   - Bot requires **ban** permission.
   - Issuing user requires **ban** permission.
@@ -39,5 +39,12 @@ Commands are listed like the following:
 
   `!echo <message*>`
 
-  The bot will respond with `<message*>` in the channel the user issued the command.
+  *The bot will respond with `<message*>` in the channel the user issued the command.*
 
+- User Info
+
+  `!userinfo <?user>`
+
+  *The bot will send a formatted message displaying when the user joined discord, user joined the current server and their user ID.*
+  
+  - The command must be run in a server.
