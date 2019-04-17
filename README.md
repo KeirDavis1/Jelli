@@ -50,6 +50,10 @@ Commands are listed like the following:
 
   - The command must be run in a server.
 
+## Contributing
+
+_TODO, Contribute to the contributing section_
+
 ---
 
 ## Todo
