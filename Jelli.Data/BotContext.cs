@@ -1,10 +1,15 @@
 ﻿using System;
+using Jelli.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Jelli.Data
 {
 	public class BotContext : DbContext
 	{
+		#region Properties
+		public DbSet<Guild> Guilds { get; set; }
+		#endregion
+
 		#region Constructor
 		public BotContext(DbContextOptions<BotContext> options)
 				: base(options)
