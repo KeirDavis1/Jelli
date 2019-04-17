@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Jelli.Data.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -16,14 +17,17 @@ namespace Jelli.ConsoleApp.Services
 		private readonly CommandService _commands;
 		private readonly DiscordSocketClient _discord;
 		private readonly IServiceProvider _services;
+		private readonly IGuildService _guildService;
 		#endregion
 
 		#region Constructor
-		public CommandHandlingService(IServiceProvider services)
+		public CommandHandlingService(IServiceProvider services, IGuildService guildService)
 		{
 			_commands = services.GetRequiredService<CommandService>();
 			_discord = services.GetRequiredService<DiscordSocketClient>();
 			_services = services;
+
+			_guildService = guildService;
 
 			// Hook CommandExecuted to handle post-command-execution logic.
 			_commands.CommandExecuted += CommandExecutedAsync;
@@ -49,12 +53,32 @@ namespace Jelli.ConsoleApp.Services
 			// This value holds the offset where the prefix ends
 			var argPos = 0;
 
+			var commandPrefix = "!";
+
+			// Get guild from the message
+			var socketGuildChannel = message.Channel as SocketGuildChannel;
+			var messageGuild = socketGuildChannel?.Guild;
+
+			// Are we in a guild?
+			if (messageGuild != null)
+			{
+				// Get the guild from the database
+				var guild = await _guildService.GetGuildAsync(messageGuild.Id);
+				if (guild.Success)
+				{
+					// Get the command prefix
+					var dbGuild = guild.ServiceObject;
+					// Use the db prefix or the default (commandPrefix)
+					commandPrefix = dbGuild.CommandPrefix ?? commandPrefix;
+				}
+			}
+			
 
 			if (
 				// User can tag the bot to use it.
 				!message.HasMentionPrefix(_discord.CurrentUser, ref argPos) &&
 				// User can use a prefix to use it.
-				!message.HasStringPrefix("!", ref argPos)
+				!message.HasStringPrefix(commandPrefix, ref argPos)
 			)
 			{
 				return;

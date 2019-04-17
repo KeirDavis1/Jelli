@@ -7,13 +7,11 @@ namespace Jelli.Data.Services.Interfaces
 {
 	public interface IGuildService
 	{
-		Task<ServiceResponse<IEnumerable<Guild>>> GetGuildAsync(ulong guildId);
-
-		Task<ServiceResponse<Guild>> CreateGuildAsync(Guild guild);
+		Task<ServiceResponse<Guild>> GetGuildAsync(ulong guildId);
 
 		Task<ServiceResponse<Guild>> DeleteGuildAsync(ulong guildId);
 
-		Task<ServiceResponse<Guild>> UpdateGuildAsync(Guild guild);
+		Task<ServiceResponse<Guild>> SetGuildCommandPrefixAsync(ulong guildId, string prefix);
 	}
 }
 

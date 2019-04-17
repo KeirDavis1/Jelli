@@ -12,6 +12,7 @@ Run the following to set the Bot Token up (you may need to restart your editor o
 
 ```
 setx token "<token>"
+dotnet ef --project Jelli.Data database update
 ```
 
 ## Commands
