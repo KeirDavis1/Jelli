@@ -6,5 +6,6 @@ namespace Jelli.Data.Models
 	{
 		[DatabaseGenerated(DatabaseGeneratedOption.None)]
 		public ulong GuildId { get; set; }
+		public string CommandPrefix { get; set; }
 	}
 }
