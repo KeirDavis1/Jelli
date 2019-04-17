@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
+using System.Linq;
 using Jelli.Data.Models;
 using Jelli.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Jelli.Data.Repositories
 {
@@ -18,9 +20,16 @@ namespace Jelli.Data.Repositories
 		#endregion
 
 		#region Methods
-		public Task<Guild> CreateGuildAsync(Guild guild)
+		public async Task<Guild> CreateGuildAsync(Guild guild)
 		{
-			throw new System.NotImplementedException();
+			await _context.AddAsync(guild);
+			var savedChanges = await _context.SaveChangesAsync();
+
+			if (savedChanges > 0)
+			{
+				return guild;
+			}
+			return null;
 		}
 
 		public Task<Guild> DeleteGuildAsync(ulong guildId)
@@ -28,14 +37,21 @@ namespace Jelli.Data.Repositories
 			throw new System.NotImplementedException();
 		}
 
-		public Task<Guild> GetGuildAsync(ulong guildId)
+		public async Task<Guild> GetGuildAsync(ulong guildId)
 		{
-			throw new System.NotImplementedException();
+			return await _context.Guilds.FirstOrDefaultAsync(g => g.GuildId == guildId);
 		}
 
-		public Task<Guild> UpdateGuildAsync(Guild guild)
+		public async Task<Guild> UpdateGuildAsync(Guild guild)
 		{
-			throw new System.NotImplementedException();
+			_context.Guilds.Update(guild);
+			var savedChanges = await _context.SaveChangesAsync();
+
+			if (savedChanges > 0)
+			{
+				return guild;
+			}
+			return null;
 		}
 		#endregion
 	}
