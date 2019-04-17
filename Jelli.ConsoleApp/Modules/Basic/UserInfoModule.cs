@@ -18,6 +18,7 @@ namespace Jelli.ConsoleApp.Modules.Basic
 			var embed = new EmbedBuilder
 			{
 				Title = $"{user} - {user.Nickname}",
+				// TODO Implement a better way of describing the current user's activity
 				Description = $"{user.Status}, ${user.Activity.Name}",
 				ThumbnailUrl = user.GetAvatarUrl(),
 				Color = Color.Orange

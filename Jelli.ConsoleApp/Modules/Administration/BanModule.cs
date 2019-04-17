@@ -17,6 +17,7 @@ namespace Jelli.ConsoleApp.Modules.Administration
 		public async Task BanUserAsync(IGuildUser user, [Remainder] string reason = null)
 		{
 			await user.Guild.AddBanAsync(user, reason: reason);
+			// TODO Reply with better ban message or custom message
 			await ReplyAsync("ok!");
 		}
 		#endregion
