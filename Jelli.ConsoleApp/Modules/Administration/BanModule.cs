@@ -9,6 +9,7 @@ namespace Jelli.ConsoleApp.Modules.Administration
 {
 	public class BanModule : ModuleBase<SocketCommandContext>
 	{
+		#region Methods
 		[Command("ban")]
 		[RequireContext(ContextType.Guild)]
 		[RequireUserPermission(GuildPermission.BanMembers)]
@@ -18,5 +19,6 @@ namespace Jelli.ConsoleApp.Modules.Administration
 			await user.Guild.AddBanAsync(user, reason: reason);
 			await ReplyAsync("ok!");
 		}
+		#endregion
 	}
 }

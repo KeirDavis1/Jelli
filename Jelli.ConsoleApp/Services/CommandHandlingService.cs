@@ -12,10 +12,13 @@ namespace Jelli.ConsoleApp.Services
 {
 	public class CommandHandlingService
 	{
+		#region Properties
 		private readonly CommandService _commands;
 		private readonly DiscordSocketClient _discord;
 		private readonly IServiceProvider _services;
+		#endregion
 
+		#region Constructor
 		public CommandHandlingService(IServiceProvider services)
 		{
 			_commands = services.GetRequiredService<CommandService>();
@@ -28,7 +31,9 @@ namespace Jelli.ConsoleApp.Services
 			// if it qualifies as a command.
 			_discord.MessageReceived += MessageReceivedAsync;
 		}
+		#endregion
 
+		#region Methods
 		public async Task InitializeAsync()
 		{
 			// Register modules that are public and inherit ModuleBase<T>.
@@ -44,13 +49,14 @@ namespace Jelli.ConsoleApp.Services
 			// This value holds the offset where the prefix ends
 			var argPos = 0;
 
-			 
+
 			if (
 				// User can tag the bot to use it.
 				!message.HasMentionPrefix(_discord.CurrentUser, ref argPos) &&
 				// User can use a prefix to use it.
 				!message.HasStringPrefix("!", ref argPos)
-			){
+			)
+			{
 				return;
 			}
 
@@ -76,5 +82,6 @@ namespace Jelli.ConsoleApp.Services
 			// the command failed, let's notify the user that something happened.
 			await context.Channel.SendMessageAsync($"error: {result}");
 		}
+		#endregion
 	}
 }

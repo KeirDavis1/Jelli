@@ -9,11 +9,11 @@ namespace Jelli.ConsoleApp.Modules.Basic
 {
 	public class UserInfoModule : ModuleBase<SocketCommandContext>
 	{
-
+		#region Methods
 		[Command("userinfo")]
 		public Task UserInfoAsync(IGuildUser user = null)
 		{
-			user = user ?? (IGuildUser) Context.User;
+			user = user ?? (IGuildUser)Context.User;
 
 			var embed = new EmbedBuilder
 			{
@@ -32,5 +32,6 @@ namespace Jelli.ConsoleApp.Modules.Basic
 
 			return ReplyAsync(embed: embed.Build());
 		}
+		#endregion
 	}
 }

@@ -8,10 +8,12 @@ namespace Jelli.ConsoleApp.Modules.Basic
 {
 	public class EchoModule : ModuleBase<SocketCommandContext>
 	{
+		#region Methods
 		[Command("echo")]
 		public Task EchoAsync([Remainder] string text)
 		{
 			return ReplyAsync('\u200B' + text);
 		}
+		#endregion
 	}
 }
