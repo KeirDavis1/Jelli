@@ -19,12 +19,24 @@ namespace Jelli.ConsoleApp
 			return (DateTime.UtcNow - user.JoinedAt)?.Days;
 		}
 
-		public static List<string> GetUserRoles(this IGuild guild, IGuildUser user)
+		public static List<IRole> GetUserRoles(this IGuild guild, IGuildUser user)
 		{
 			var result = from serverRoles in guild.Roles.Where(role => guild.Id != role.Id) // Guild ID And @everyone ID is the same
-									 from userRoles in user.RoleIds.Where(x => x == serverRoles.Id).DefaultIfEmpty()
+									 join userRoles in user.RoleIds on serverRoles.Id equals userRoles
 									 select serverRoles;
-			return result.Select(q => q.Name).ToList();
+			return result.ToList();
+		}
+
+		public static List<string> GetUserRolesList(this IGuild guild, IGuildUser user)
+		{
+			return GetUserRoles(guild, user).Select(q => q.Name).ToList();
+		}
+
+		public static IRole GetHighestRole(this IGuild guild, IGuildUser user)
+		{
+			var roles = GetUserRoles(guild, user);
+
+			return roles.OrderByDescending(role => role.Position).FirstOrDefault();
 		}
 	}
 }

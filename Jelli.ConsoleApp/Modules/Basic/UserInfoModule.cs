@@ -15,20 +15,26 @@ namespace Jelli.ConsoleApp.Modules.Basic
 		{
 			user = user ?? (IGuildUser)Context.User;
 
+			var description = $"{user.Status}";
+			if (user.Activity != null)
+			{
+				description += $", {user.Activity.Type} {user.Activity.Name}";
+			}
+
 			var embed = new EmbedBuilder
 			{
 				Title = $"{user} - {user.Nickname}",
 				// TODO Implement a better way of describing the current user's activity
-				Description = $"{user.Status}, ${user.Activity.Name}",
+				Description = description,
 				ThumbnailUrl = user.GetAvatarUrl(),
-				Color = Color.Orange
+				Color = user.Guild.GetHighestRole(user)?.Color
 			};
 			// Joined Discord field
 			embed.AddField("Joined Discord", $"{user.CreatedAt.ToString("F")} ({user.DaysSinceCreated()} days ago)", inline: true);
 			// Joined server field
 			embed.AddField("Joined server", $"{user.JoinedAt?.ToString("F")} ({user.DaysSinceJoined()} days ago)", inline: true);
 			// Roles field
-			embed.AddField("Roles", $"{string.Join(", ", user.Guild.GetUserRoles(user))}")
+			embed.AddField("Roles", $"{string.Join(", ", user.Guild.GetUserRolesList(user))}")
 				.WithFooter(footer => footer.Text = $"User ID {user.Id}");
 
 			return ReplyAsync(embed: embed.Build());
