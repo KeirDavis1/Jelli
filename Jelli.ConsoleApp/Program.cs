@@ -61,6 +61,7 @@ namespace Jelli.ConsoleApp
 					.AddSingleton<DiscordSocketClient>()
 					.AddSingleton<CommandService>()
 					.AddSingleton<CommandHandlingService>()
+					.AddMemoryCache()
 					.AddEntityFrameworkSqlite()
 					.AddDbContext<BotContext>()
 					.AddScoped<IGuildRepository, GuildRepository>()

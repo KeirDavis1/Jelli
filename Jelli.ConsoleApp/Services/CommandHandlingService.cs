@@ -63,16 +63,14 @@ namespace Jelli.ConsoleApp.Services
 			if (messageGuild != null)
 			{
 				// Get the guild from the database
-				var guild = await _guildService.GetGuildAsync(messageGuild.Id);
+				var guild = await _guildService.GetGuildCommandPrefixAsync(messageGuild.Id);
 				if (guild.Success)
 				{
 					// Get the command prefix
-					var dbGuild = guild.ServiceObject;
-					// Use the db prefix or the default (commandPrefix)
-					commandPrefix = dbGuild.CommandPrefix ?? commandPrefix;
+					commandPrefix = guild.ServiceObject ?? commandPrefix;
 				}
 			}
-			
+
 
 			if (
 				// User can tag the bot to use it.

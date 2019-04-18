@@ -11,6 +11,8 @@ namespace Jelli.Data.Services.Interfaces
 
 		Task<ServiceResponse<Guild>> DeleteGuildAsync(ulong guildId);
 
+		Task<ServiceResponse<string>> GetGuildCommandPrefixAsync(ulong guildId);
+
 		Task<ServiceResponse<Guild>> SetGuildCommandPrefixAsync(ulong guildId, string prefix);
 	}
 }
