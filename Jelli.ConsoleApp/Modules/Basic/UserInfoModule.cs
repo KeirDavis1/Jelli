@@ -21,9 +21,15 @@ namespace Jelli.ConsoleApp.Modules.Basic
 				description += $", {user.Activity.Type} {user.Activity.Name}";
 			}
 
+			var title = $"{user}";
+			if (user.Nickname != null)
+			{
+				title += $"- {user.Nickname}";
+			}
+
 			var embed = new EmbedBuilder
 			{
-				Title = $"{user} - {user.Nickname}",
+				Title = title,
 				// TODO Implement a better way of describing the current user's activity
 				Description = description,
 				ThumbnailUrl = user.GetAvatarUrl(),
@@ -34,8 +40,12 @@ namespace Jelli.ConsoleApp.Modules.Basic
 			// Joined server field
 			embed.AddField("Joined server", $"{user.JoinedAt?.ToString("F")} ({user.DaysSinceJoined()} days ago)", inline: true);
 			// Roles field
-			embed.AddField("Roles", $"{string.Join(", ", user.Guild.GetUserRolesList(user))}")
-				.WithFooter(footer => footer.Text = $"User ID {user.Id}");
+			var usersRoles = user.Guild.GetUserRolesList(user);
+			if (usersRoles.Count > 0)
+			{
+				embed.AddField("Roles", $"{string.Join(", ", usersRoles)}")
+					.WithFooter(footer => footer.Text = $"User ID {user.Id}");
+			}
 
 			return ReplyAsync(embed: embed.Build());
 		}
