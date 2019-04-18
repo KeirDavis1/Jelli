@@ -72,7 +72,7 @@ namespace Jelli.Data.Services
 				return new ServiceResponse<string>(dbGuild.CommandPrefix);
 			}
 
-			return null;
+			return new ServiceResponse<string>(null, success: false, message: "Guild not registered in database");
 		}
 
 		public async Task<ServiceResponse<Guild>> SetGuildCommandPrefixAsync(ulong guildId, string prefix)
