@@ -71,7 +71,6 @@ namespace Jelli.ConsoleApp.Services
 				}
 			}
 
-
 			if (
 				// User can tag the bot to use it.
 				!message.HasMentionPrefix(_discord.CurrentUser, ref argPos) &&
