@@ -18,6 +18,7 @@ namespace Jelli.ConsoleApp
 	{
 		#region Properties
 		private readonly DiscordSocketClient _client;
+		public static string Version = "v0.0.1";
 		#endregion
 
 		#region Constructor
