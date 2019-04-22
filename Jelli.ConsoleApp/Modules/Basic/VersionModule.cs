@@ -1,3 +1,4 @@
+using Discord;
 using Discord.Commands;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,17 @@ namespace Jelli.ConsoleApp.Modules.Basic
 		#region Methods
 		[Command("version")]
 		[Alias("v", "ver")]
-		public Task PingAsync()
+		public Task VersionAsync()
 		{
-			return ReplyAsync($"Jelli Bot - {Program.Version}");
+			var embed = new EmbedBuilder
+			{
+				Title = "Version",
+				Description = $"We're running on version {Program.Version}! :tada:",
+				ThumbnailUrl = Context.Guild.CurrentUser.GetAvatarUrl(),
+				Color = Context.Guild.GetHighestRole(Context.Guild.CurrentUser)?.Color
+			};
+
+			return ReplyAsync(embed: embed.Build());
 		}
 		#endregion
 	}
