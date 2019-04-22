@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,9 +13,13 @@ namespace Jelli.ConsoleApp.Modules.Basic
 		[Command("echo")]
 		public Task EchoAsync([Remainder] string text)
 		{
-			// Reply with a zero width space prefixed
-			// Stops us calling other bots, i.e. someone running !echo !ban @username
-			return ReplyAsync('\u200B' + text);
+			var embed = new EmbedBuilder
+			{
+				Title = "Echo",
+				Description = text,
+				Color = Context.Guild.GetHighestRole(Context.Guild.GetUser(Context.User.Id))?.Color
+			};
+			return ReplyAsync(embed: embed.Build());
 		}
 		#endregion
 	}
