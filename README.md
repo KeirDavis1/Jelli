@@ -12,8 +12,11 @@ Run the following to set the Bot Token up (you may need to restart your editor o
 
 ```
 setx token "<token>"
-dotnet ef --project Jelli.Data database update
+dotnet ef --project Jelli.ConsoleApp database update
 ```
+
+NOTES:
+- If running from Visual Studio, your running application directory is inside bin/Debug/ so the newly created DB file must be copied there.
 
 ## Commands
 
@@ -35,6 +38,13 @@ Commands are listed like the following:
   - Bot requires **ban** permission.
   - Issuing user requires **ban** permission.
 
+- Set Prefix
+
+  `!setprefix <prefix>`
+
+  _The bot will set the prefix for the server to `<prefix>`. If you can no longer access it, you can
+  mention the bot and run the command without the command prefix (`!`).
+
 **Basic**
 
 - Echo
@@ -51,18 +61,18 @@ Commands are listed like the following:
 
   - The command must be run in a server.
 
+- Version
+
+  `!version`
+
+  _The bot will respond with the applications version in the channel the user issued the command._
+
+- Ping
+
+  `!ping`
+
+  _The bot will respond with "pong" in the channel the user issued the command._
+
 ## Contributing
 
 _TODO, Contribute to the contributing section_
-
----
-
-## Todo
-
-- Verification
-
-  Allows a server to implement a lobby-based or verification system to allow active members to be verified into a community.
-
-- Role Management
-
-  Allows a server to implement roles based on time in server, a user clicking on a reaction or using a command.

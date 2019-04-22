@@ -25,6 +25,7 @@ namespace Jelli.ConsoleApp
 		#region Constructor
 		public static void Main(string[] args)
 		{
+			/// Uncomment the following to test if you've added the token correctly
 			//Console.WriteLine(Environment.GetEnvironmentVariable("token"));
 			//Console.ReadKey();
 			new Program().MainAsync().GetAwaiter().GetResult();
