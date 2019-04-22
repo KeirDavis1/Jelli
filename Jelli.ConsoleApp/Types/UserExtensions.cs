@@ -5,7 +5,7 @@ using System.Text;
 using System.Linq;
 using Discord.WebSocket;
 
-namespace Jelli.ConsoleApp
+namespace Jelli.ConsoleApp.Types
 {
 	public static class UserExtensions
 	{
@@ -22,8 +22,8 @@ namespace Jelli.ConsoleApp
 		public static List<IRole> GetUserRoles(this IGuild guild, IGuildUser user)
 		{
 			var result = from serverRoles in guild.Roles.Where(role => guild.Id != role.Id) // Guild ID And @everyone ID is the same
-									 join userRoles in user.RoleIds on serverRoles.Id equals userRoles
-									 select serverRoles;
+						 join userRoles in user.RoleIds on serverRoles.Id equals userRoles
+						 select serverRoles;
 			return result.ToList();
 		}
 

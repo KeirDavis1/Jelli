@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Jelli.ConsoleApp.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;

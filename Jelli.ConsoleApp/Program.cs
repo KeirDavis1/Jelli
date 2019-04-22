@@ -11,6 +11,7 @@ using Jelli.Data.Repositories.Interfaces;
 using Jelli.Data.Services.Interfaces;
 using Jelli.Data.Repositories;
 using Jelli.Data.Services;
+using Jelli.ConsoleApp.Types;
 
 namespace Jelli.ConsoleApp
 {
@@ -59,6 +60,7 @@ namespace Jelli.ConsoleApp
 		private ServiceProvider ConfigureServices()
 		{
 			return new ServiceCollection()
+					.AddSingleton<BotPersistence>(new BotPersistence())
 					.AddSingleton<DiscordSocketClient>()
 					.AddSingleton<CommandService>()
 					.AddSingleton<CommandHandlingService>()

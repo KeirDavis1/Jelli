@@ -1,5 +1,6 @@
 using Discord;
 using Discord.Commands;
+using Jelli.ConsoleApp.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Jelli.ConsoleApp.Modules.Basic
 			var embed = new EmbedBuilder
 			{
 				Title = "Version",
-				Description = $"We're running on version {Program.Version}! :tada:",
+				Description = $":tada: We're running on version {Program.Version}!",
 				ThumbnailUrl = Context.Guild.CurrentUser.GetAvatarUrl(),
 				Color = Context.Guild.GetHighestRole(Context.Guild.CurrentUser)?.Color
 			};
