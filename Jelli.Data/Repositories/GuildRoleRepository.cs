@@ -50,6 +50,11 @@ namespace Jelli.Data.Repositories
 			return await _context.GuildRoles.Where(g => g.GuildId == guildId).ToListAsync();
 		}
 
+		public async Task<GuildRole> GetGuildRoleAsync(ulong guildId, string roleDisplayName)
+		{
+			return await _context.GuildRoles.Where(g => g.GuildId == guildId && g.RoleDisplayName.ToLower() == roleDisplayName.ToLower()).FirstOrDefaultAsync();
+		}
+
 		public async Task<GuildRole> UpdateGuildRoleAsync(GuildRole guildRole)
 		{
 			_context.GuildRoles.Update(guildRole);

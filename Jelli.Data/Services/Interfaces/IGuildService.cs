@@ -9,6 +9,8 @@ namespace Jelli.Data.Services.Interfaces
 	{
 		Task<ServiceResponse<Guild>> GetGuildAsync(ulong guildId);
 
+		Task<ServiceResponse<Guild>> CreateGuildAsync(ulong guildId);
+
 		Task<ServiceResponse<Guild>> DeleteGuildAsync(ulong guildId);
 
 		Task<ServiceResponse<string>> GetGuildCommandPrefixAsync(ulong guildId);
@@ -18,6 +20,8 @@ namespace Jelli.Data.Services.Interfaces
 		Task<ServiceResponse<GuildRole>> CreateGuildRoleAsync(ulong guildId, ulong roleId, string roleDisplayName);
 
 		Task<ServiceResponse<IEnumerable<GuildRole>>> GetGuildRolesAsync(ulong guildId);
+
+		Task<ServiceResponse<GuildRole>> GetGuildRoleAsync(ulong guildId, string roleDisplayName);
 	}
 }
 

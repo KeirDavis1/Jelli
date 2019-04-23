@@ -91,6 +91,20 @@ namespace Jelli.Data.Services
 			return new ServiceResponse<string>(null, success: false, message: "Guild not registered in database");
 		}
 
+		public async Task<ServiceResponse<Guild>> CreateGuildAsync(ulong guildId)
+		{
+			var guild = await _guildRepository.CreateGuildAsync(new Guild
+			{
+				GuildId = guildId
+			});
+
+			if (guild != null)
+			{
+				return new ServiceResponse<Guild>(guild);
+			}
+			return new ServiceResponse<Guild>(null, success: false, message: "Could not create guild");
+		}
+
 		public async Task<ServiceResponse<Guild>> SetGuildCommandPrefixAsync(ulong guildId, string prefix)
 		{
 			var guild = await _guildRepository.GetGuildAsync(guildId);
@@ -145,6 +159,16 @@ namespace Jelli.Data.Services
 		public Task<ServiceResponse<IEnumerable<GuildRole>>> GetGuildRolesAsync(ulong guildId)
 		{
 			throw new NotImplementedException();
+		}
+
+		public async Task<ServiceResponse<GuildRole>> GetGuildRoleAsync(ulong guildId, string roleDisplayName)
+		{
+			var dbRole = await _guildRoleRepository.GetGuildRoleAsync(guildId, roleDisplayName);
+			if (dbRole != null)
+			{
+				return new ServiceResponse<GuildRole>(dbRole);
+			}
+			return new ServiceResponse<GuildRole>(null, success: false, message: "Failed to find the guild role");
 		}
 		#endregion
 	}

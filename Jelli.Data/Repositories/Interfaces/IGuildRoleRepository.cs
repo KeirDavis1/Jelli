@@ -8,6 +8,8 @@ namespace Jelli.Data.Repositories.Interfaces
 	{
 		Task<IEnumerable<GuildRole>> GetGuildRolesAsync(ulong guildId);
 
+		Task<GuildRole> GetGuildRoleAsync(ulong guildId, string roleDisplayName);
+
 		Task<GuildRole> CreateGuildRoleAsync(GuildRole guildRole);
 
 		Task<GuildRole> DeleteGuildRoleAsync(GuildRole guildRole);

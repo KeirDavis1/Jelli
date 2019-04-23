@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Jelli.Data.Migrations
 {
     [DbContext(typeof(BotContext))]
-    [Migration("20190417182448_InitialMigration")]
+    [Migration("20190423134607_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,6 +26,32 @@ namespace Jelli.Data.Migrations
                     b.HasKey("GuildId");
 
                     b.ToTable("Guilds");
+                });
+
+            modelBuilder.Entity("Jelli.Data.Models.GuildRole", b =>
+                {
+                    b.Property<ulong>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<ulong>("GuildId");
+
+                    b.Property<string>("RoleDisplayName");
+
+                    b.Property<ulong>("RoleId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GuildId");
+
+                    b.ToTable("GuildRoles");
+                });
+
+            modelBuilder.Entity("Jelli.Data.Models.GuildRole", b =>
+                {
+                    b.HasOne("Jelli.Data.Models.Guild", "Guild")
+                        .WithMany("GuildRoles")
+                        .HasForeignKey("GuildId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
