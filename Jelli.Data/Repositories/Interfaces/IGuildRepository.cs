@@ -9,7 +9,7 @@ namespace Jelli.Data.Repositories.Interfaces
 
 		Task<Guild> CreateGuildAsync(Guild guild);
 
-		Task<Guild> DeleteGuildAsync(ulong guildId);
+		Task<Guild> DeleteGuildAsync(Guild guild);
 
 		Task<Guild> UpdateGuildAsync(Guild guild);
 	}

@@ -18,7 +18,6 @@ namespace Jelli.ConsoleApp
 	public class Program
 	{
 		#region Properties
-		private readonly DiscordSocketClient _client;
 		public static string Version = "v0.0.1";
 		#endregion
 
@@ -69,6 +68,7 @@ namespace Jelli.ConsoleApp
 					.AddEntityFrameworkSqlite()
 					.AddDbContext<BotContext>()
 					.AddScoped<IGuildRepository, GuildRepository>()
+					.AddScoped<IGuildRoleRepository, GuildRoleRepository>()
 					.AddScoped<IGuildService, GuildService>()
 					.BuildServiceProvider();
 		}

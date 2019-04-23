@@ -32,9 +32,16 @@ namespace Jelli.Data.Repositories
 			return null;
 		}
 
-		public Task<Guild> DeleteGuildAsync(ulong guildId)
+		public async Task<Guild> DeleteGuildAsync(Guild guild)
 		{
-			throw new System.NotImplementedException();
+			_context.Guilds.Remove(guild);
+			var savedChanged = await _context.SaveChangesAsync();
+
+			if (savedChanged > 0)
+			{
+				return guild;
+			}
+			return null;
 		}
 
 		public async Task<Guild> GetGuildAsync(ulong guildId)

@@ -13,13 +13,15 @@ namespace Jelli.Data.Services
 	{
 		#region Properties
 		private readonly IGuildRepository _guildRepository;
+		private readonly IGuildRoleRepository _guildRoleRepository;
 		private readonly IMemoryCache _memoryCache;
 		#endregion
 
 		#region Constructor
-		public GuildService(IGuildRepository guildRepository, IMemoryCache memoryCache)
+		public GuildService(IGuildRepository guildRepository, IGuildRoleRepository guildRoleRepository, IMemoryCache memoryCache)
 		{
 			_guildRepository = guildRepository;
+			_guildRoleRepository = guildRoleRepository;
 			_memoryCache = memoryCache;
 		}
 		#endregion
@@ -35,9 +37,23 @@ namespace Jelli.Data.Services
 			return new TimeSpan(hours: 0, minutes: 30, seconds: 0);
 		}
 
-		public Task<ServiceResponse<Guild>> DeleteGuildAsync(ulong guildId)
+		public async Task<ServiceResponse<Guild>> DeleteGuildAsync(ulong guildId)
 		{
-			throw new System.NotImplementedException();
+			var guild = await _guildRepository.GetGuildAsync(guildId);
+			if (guild != null)
+			{
+				// Call the repository to delete the guild
+				var deletedGuild = _guildRepository.DeleteGuildAsync(guild);
+				if (deletedGuild != null)
+				{
+					// Deleted the guild
+					return new ServiceResponse<Guild>(guild);
+				}
+				// Deleting the guild failed
+				return new ServiceResponse<Guild>(null, success: false, message: "Failed to delete the guild");
+			}
+			// Couldn't get the guild
+			return new ServiceResponse<Guild>(null, success: false, message: "Failed to get the guild");
 		}
 
 		public async Task<ServiceResponse<Guild>> GetGuildAsync(ulong guildId)
@@ -107,6 +123,28 @@ namespace Jelli.Data.Services
 				}
 				return new ServiceResponse<Guild>(null, success: false, message: "Failed to set the new prefix");
 			}
+		}
+
+		public async Task<ServiceResponse<GuildRole>> CreateGuildRoleAsync(ulong guildId, ulong roleId, string roleDisplayName)
+		{
+			var newGuildRole = new GuildRole
+			{
+				GuildId = guildId,
+				RoleId = roleId,
+				RoleDisplayName = roleDisplayName
+			};
+			var createdGuildRole = await _guildRoleRepository.CreateGuildRoleAsync(newGuildRole);
+
+			if (createdGuildRole != null)
+			{
+				return new ServiceResponse<GuildRole>(createdGuildRole);
+			}
+			return new ServiceResponse<GuildRole>(null, success: false, message: "Failed to create guild role");
+		}
+
+		public Task<ServiceResponse<IEnumerable<GuildRole>>> GetGuildRolesAsync(ulong guildId)
+		{
+			throw new NotImplementedException();
 		}
 		#endregion
 	}

@@ -14,6 +14,10 @@ namespace Jelli.Data.Services.Interfaces
 		Task<ServiceResponse<string>> GetGuildCommandPrefixAsync(ulong guildId);
 
 		Task<ServiceResponse<Guild>> SetGuildCommandPrefixAsync(ulong guildId, string prefix);
+
+		Task<ServiceResponse<GuildRole>> CreateGuildRoleAsync(ulong guildId, ulong roleId, string roleDisplayName);
+
+		Task<ServiceResponse<IEnumerable<GuildRole>>> GetGuildRolesAsync(ulong guildId);
 	}
 }
 

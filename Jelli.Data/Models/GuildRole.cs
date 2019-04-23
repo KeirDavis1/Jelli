@@ -1,16 +1,16 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Jelli.Data.Models
 {
-	public class Guild
+	public class GuildRole
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.None)]
 		public ulong GuildId { get; set; }
-		public string CommandPrefix { get; set; }
+		public ulong RoleId { get; set; }
+		public string RoleDisplayName { get; set; }
 
-		public List<GuildRole> GuildRoles { get; set; }
+		public Guild Guild { get; set; }
 	}
 }

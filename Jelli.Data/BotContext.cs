@@ -8,6 +8,7 @@ namespace Jelli.Data
 	{
 		#region Properties
 		public DbSet<Guild> Guilds { get; set; }
+		public DbSet<GuildRole> GuildRoles { get; set; }
 		#endregion
 
 		#region Constructor
