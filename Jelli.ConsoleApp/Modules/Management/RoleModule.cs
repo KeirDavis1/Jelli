@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jelli.ConsoleApp.Modules.Basic
+namespace Jelli.ConsoleApp.Modules.Management
 {
 	[Group("role")]
 	[RequireContext(ContextType.Guild)]
