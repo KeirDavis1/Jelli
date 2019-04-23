@@ -48,14 +48,13 @@ namespace Jelli.ConsoleApp.Modules.Basic
 				{
 					// TODO Delete the role
 				}
-
 			}
 			await ReplyAsync("Couldn't find that role");
 		}
 
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		[Command("relieve")]
-		[Alias("revoke", "remove")]
+		[Alias("revoke", "remove", "leave")]
 		public async Task RoleRelieveAsync(string displayName)
 		{
 			var response = await _guildService.GetGuildRoleAsync(Context.Guild.Id, displayName);
