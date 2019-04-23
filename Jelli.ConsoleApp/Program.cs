@@ -19,6 +19,7 @@ namespace Jelli.ConsoleApp
 	{
 		#region Properties
 		public static string Version = "v0.0.1";
+		private CommandService _commands;
 		#endregion
 
 		#region Constructor
@@ -28,6 +29,16 @@ namespace Jelli.ConsoleApp
 			//Console.WriteLine(Environment.GetEnvironmentVariable("token"));
 			//Console.ReadKey();
 			new Program().MainAsync().GetAwaiter().GetResult();
+		}
+
+		public Program(CommandService commands = null)
+		{
+			_commands = commands ?? new CommandService(new CommandServiceConfig
+			{
+				DefaultRunMode = RunMode.Async,
+				CaseSensitiveCommands = false,
+				LogLevel = LogSeverity.Verbose
+			});
 		}
 		#endregion
 
@@ -62,7 +73,7 @@ namespace Jelli.ConsoleApp
 			return new ServiceCollection()
 					.AddSingleton<BotPersistence>(new BotPersistence())
 					.AddSingleton<DiscordSocketClient>()
-					.AddSingleton<CommandService>()
+					.AddSingleton(_commands)
 					.AddSingleton<CommandHandlingService>()
 					.AddMemoryCache()
 					.AddEntityFrameworkSqlite()
