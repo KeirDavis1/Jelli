@@ -53,6 +53,34 @@ namespace Jelli.ConsoleApp.Modules.Basic
 			await ReplyAsync("Couldn't find that role");
 		}
 
+		[RequireBotPermission(GuildPermission.ManageRoles)]
+		[Command("relieve")]
+		[Alias("revoke", "remove")]
+		public async Task RoleRelieveAsync(string displayName)
+		{
+			var response = await _guildService.GetGuildRoleAsync(Context.Guild.Id, displayName);
+			if (response.Success)
+			{
+				var guildUser = (IGuildUser)Context.User;
+				var guildRole = Context.Guild.Roles.FirstOrDefault(a => a.Id == response.ServiceObject.RoleId);
+
+				// Does the role exist in the server?
+				if (guildRole != null)
+				{
+					// Add role to user
+					await guildUser.RemoveRoleAsync((IRole)guildRole);
+					await ReplyAsync("Role relieved!");
+					return;
+				}
+				else
+				{
+					// TODO Delete the role
+				}
+
+			}
+			await ReplyAsync("Couldn't find that role");
+		}
+
 		[Command("create")]
 		[RequireUserPermission(GuildPermission.ManageRoles)]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
