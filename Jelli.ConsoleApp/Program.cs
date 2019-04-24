@@ -12,6 +12,7 @@ using Jelli.Data.Services.Interfaces;
 using Jelli.Data.Repositories;
 using Jelli.Data.Services;
 using Jelli.ConsoleApp.Types;
+using Discord.Addons.Interactive;
 
 namespace Jelli.ConsoleApp
 {
@@ -75,6 +76,7 @@ namespace Jelli.ConsoleApp
 					.AddSingleton<DiscordSocketClient>()
 					.AddSingleton(_commands)
 					.AddSingleton<CommandHandlingService>()
+					.AddSingleton<InteractiveService>()
 					.AddMemoryCache()
 					.AddEntityFrameworkSqlite()
 					.AddDbContext<BotContext>()
