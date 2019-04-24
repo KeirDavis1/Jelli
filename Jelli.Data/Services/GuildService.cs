@@ -14,14 +14,16 @@ namespace Jelli.Data.Services
 		#region Properties
 		private readonly IGuildRepository _guildRepository;
 		private readonly IGuildRoleRepository _guildRoleRepository;
+		private readonly IGuildUserNoteRepository _guildUserNoteRepository;
 		private readonly IMemoryCache _memoryCache;
 		#endregion
 
 		#region Constructor
-		public GuildService(IGuildRepository guildRepository, IGuildRoleRepository guildRoleRepository, IMemoryCache memoryCache)
+		public GuildService(IGuildRepository guildRepository, IGuildRoleRepository guildRoleRepository, IGuildUserNoteRepository guildUserNoteRepository, IMemoryCache memoryCache)
 		{
 			_guildRepository = guildRepository;
 			_guildRoleRepository = guildRoleRepository;
+			_guildUserNoteRepository = guildUserNoteRepository;
 			_memoryCache = memoryCache;
 		}
 		#endregion
@@ -141,6 +143,18 @@ namespace Jelli.Data.Services
 
 		public async Task<ServiceResponse<GuildRole>> CreateGuildRoleAsync(ulong guildId, ulong roleId, string roleDisplayName)
 		{
+			if (_guildRepository.GetGuildAsync(guildId) == null)
+			{
+				var guildDb = await _guildRepository.CreateGuildAsync(new Guild
+				{
+					GuildId = guildId
+				});
+				if (guildDb == null)
+				{
+					return new ServiceResponse<GuildRole>(null, success: false, message: "Couldn't create guild");
+				}
+			}
+
 			var newGuildRole = new GuildRole
 			{
 				GuildId = guildId,
@@ -169,6 +183,45 @@ namespace Jelli.Data.Services
 				return new ServiceResponse<GuildRole>(dbRole);
 			}
 			return new ServiceResponse<GuildRole>(null, success: false, message: "Failed to find the guild role");
+		}
+
+		public async Task<ServiceResponse<IEnumerable<GuildUserNote>>> GetGuildUserNotesAsync(ulong guildId, ulong userId)
+		{
+			var dbResponse = await _guildUserNoteRepository.GetGuildUserNotesAsync(guildId, userId);
+			if (dbResponse != null)
+			{
+				return new ServiceResponse<IEnumerable<GuildUserNote>>(dbResponse);
+			}
+			return new ServiceResponse<IEnumerable<GuildUserNote>>(null, success: false, message: "Failed to get notes for user");
+		}
+
+		public async Task<ServiceResponse<GuildUserNote>> CreateGuildUserNoteAsync(ulong guildId, ulong userId, ulong submitterId, string content)
+		{
+			if (await _guildRepository.GetGuildAsync(guildId) == null)
+			{
+				var guildDb = await _guildRepository.CreateGuildAsync(new Guild
+				{
+					GuildId = guildId
+				});
+				if (guildDb == null)
+				{
+					return new ServiceResponse<GuildUserNote>(null, success: false, message: "Couldn't create guild");
+				}
+			}
+
+			var dbResponse = await _guildUserNoteRepository.CreateGuildUserNoteAsync(new GuildUserNote
+			{
+				GuildId = guildId,
+				UserId = userId,
+				SubmitterId = submitterId,
+				Content = content,
+				Created = DateTime.UtcNow
+			});
+			if (dbResponse != null)
+			{
+				return new ServiceResponse<GuildUserNote>(dbResponse);
+			}
+			return new ServiceResponse<GuildUserNote>(null, success: false, message: "Failed to get create the note for this user");
 		}
 		#endregion
 	}

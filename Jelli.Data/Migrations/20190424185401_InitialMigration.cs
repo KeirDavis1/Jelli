@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Jelli.Data.Migrations
 {
@@ -39,9 +40,37 @@ namespace Jelli.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "GuildUserNotes",
+                columns: table => new
+                {
+                    Id = table.Column<ulong>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserId = table.Column<ulong>(nullable: false),
+                    SubmitterId = table.Column<ulong>(nullable: false),
+                    Content = table.Column<string>(nullable: true),
+                    Created = table.Column<DateTime>(nullable: false),
+                    GuildId = table.Column<ulong>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GuildUserNotes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GuildUserNotes_Guilds_GuildId",
+                        column: x => x.GuildId,
+                        principalTable: "Guilds",
+                        principalColumn: "GuildId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_GuildRoles_GuildId",
                 table: "GuildRoles",
+                column: "GuildId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GuildUserNotes_GuildId",
+                table: "GuildUserNotes",
                 column: "GuildId");
         }
 
@@ -49,6 +78,9 @@ namespace Jelli.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "GuildRoles");
+
+            migrationBuilder.DropTable(
+                name: "GuildUserNotes");
 
             migrationBuilder.DropTable(
                 name: "Guilds");

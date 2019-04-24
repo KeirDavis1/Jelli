@@ -22,6 +22,11 @@ namespace Jelli.Data.Services.Interfaces
 		Task<ServiceResponse<IEnumerable<GuildRole>>> GetGuildRolesAsync(ulong guildId);
 
 		Task<ServiceResponse<GuildRole>> GetGuildRoleAsync(ulong guildId, string roleDisplayName);
+
+		Task<ServiceResponse<IEnumerable<GuildUserNote>>> GetGuildUserNotesAsync(ulong guildId, ulong userId);
+
+		Task<ServiceResponse<GuildUserNote>> CreateGuildUserNoteAsync(ulong guildId, ulong userId, ulong submitterId, string content);
+
 	}
 }
 
