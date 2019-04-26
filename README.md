@@ -8,14 +8,15 @@ Requirements:
 
 - .NET Core 2.2
 
-Run the following to set the Bot Token up (you may need to restart your editor on Windows)
+Run the following to set the bot up (you may need to restart your editor on Windows for the token to be applied to your environment)
 
 ```
 setx token "<token>"
 dotnet ef --project Jelli.ConsoleApp database update
 ```
 
-NOTES:
+**NOTES**:
+
 - If running from Visual Studio, your running application directory is inside bin/Debug/ so the newly created DB file must be copied there.
 
 ## Commands
@@ -42,8 +43,7 @@ Commands are listed like the following:
 
   `!setprefix <prefix>`
 
-  _The bot will set the prefix for the server to `<prefix>`. If you can no longer access it, you can
-  mention the bot and run the command without the command prefix (`!`).
+  _The bot will set the prefix for the server to `<prefix>`. If you can no longer access it, you can mention the bot and run the command without the command prefix (`!`)._
 
 **Basic**
 

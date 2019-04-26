@@ -13,17 +13,33 @@ namespace Jelli.ConsoleApp.Modules.Basic
 		#region Methods
 		[Command("version")]
 		[Alias("v", "ver")]
-		public Task VersionAsync()
+		public async Task VersionAsync()
 		{
+			var embedColour = Color.Blue;
+			if (Context.Guild != null)
+			{
+				embedColour = Context.Guild.GetHighestRole(Context.Guild.CurrentUser)?.Color ?? embedColour;
+			}
+
+			var replyDescription = $":tada: We're running on version {Program.Version}!";
+
 			var embed = new EmbedBuilder
 			{
 				Title = "Version",
-				Description = $":tada: We're running on version {Program.Version}!",
-				ThumbnailUrl = Context.Guild.CurrentUser.GetAvatarUrl(),
-				Color = Context.Guild.GetHighestRole(Context.Guild.CurrentUser)?.Color
+				Description = replyDescription,
+				ThumbnailUrl = Context.Client.CurrentUser.GetAvatarUrl(),
+				Color = embedColour
 			};
 
-			return ReplyAsync(embed: embed.Build());
+			try
+			{
+				await ReplyAsync(embed: embed.Build());
+			}
+			catch (Exception)
+			{
+				// This may occurr when there is no permission for embeds
+				await ReplyAsync(replyDescription);
+			}
 		}
 		#endregion
 	}

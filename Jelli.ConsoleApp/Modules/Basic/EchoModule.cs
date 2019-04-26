@@ -12,15 +12,29 @@ namespace Jelli.ConsoleApp.Modules.Basic
 	{
 		#region Methods
 		[Command("echo")]
-		public Task EchoAsync([Remainder] string text)
+		[RequireBotPermission(ChannelPermission.EmbedLinks)]
+		public async Task EchoAsync([Remainder] string text)
 		{
+			var embedColour = Color.Blue;
+			if (Context.Guild != null)
+			{
+				embedColour = Context.Guild.GetHighestRole(Context.Guild.CurrentUser)?.Color ?? embedColour;
+			}
+
 			var embed = new EmbedBuilder
 			{
 				Title = "Echo",
 				Description = text,
-				Color = Context.Guild.GetHighestRole(Context.Guild.GetUser(Context.User.Id))?.Color
+				Color = embedColour
 			};
-			return ReplyAsync(embed: embed.Build());
+			try
+			{
+				await ReplyAsync(embed: embed.Build());
+			}
+			catch (Exception)
+			{
+				await ReplyAsync("I don't have permissions to echo");
+			}
 		}
 		#endregion
 	}

@@ -12,6 +12,7 @@ namespace Jelli.ConsoleApp.Modules.Basic
 	{
 		#region Methods
 		[Command("userinfo")]
+		[RequireContext(ContextType.Guild)]
 		public Task UserInfoAsync(IGuildUser user = null)
 		{
 			user = user ?? (IGuildUser)Context.User;

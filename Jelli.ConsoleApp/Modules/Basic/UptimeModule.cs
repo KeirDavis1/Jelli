@@ -3,6 +3,7 @@ using Discord;
 using Discord.Commands;
 using Jelli.ConsoleApp.Types;
 using System.Linq;
+using System;
 
 namespace Jelli.ConsoleApp.Modules.Basic
 {
@@ -22,17 +23,33 @@ namespace Jelli.ConsoleApp.Modules.Basic
 		#region Methods
 		[Command("uptime")]
 		[Alias("ut")]
-		public Task UptimeAsync()
+		public async Task UptimeAsync()
 		{
+			var embedColour = Color.Blue;
+			if (Context.Guild != null)
+			{
+				embedColour = Context.Guild.GetHighestRole(Context.Guild.CurrentUser)?.Color ?? embedColour;
+			}
+
+			var replyDescription = $":timer: We've been running for {_botPersistence.GetUptime().ToString()}";
+
 			var embed = new EmbedBuilder
 			{
 				Title = "Uptime",
-				Description = $":timer: We've been running for {_botPersistence.GetUptime().ToString()}",
-				ThumbnailUrl = Context.Guild.CurrentUser.GetAvatarUrl(),
-				Color = Context.Guild.GetHighestRole(Context.Guild.CurrentUser)?.Color
+				Description = replyDescription,
+				ThumbnailUrl = Context.Client.CurrentUser.GetAvatarUrl(),
+				Color = embedColour
 			};
 
-			return ReplyAsync(embed: embed.Build());
+			try
+			{
+				await ReplyAsync(embed: embed.Build());
+			}
+			catch (Exception)
+			{
+				// This may occurr when there is no permission for embeds
+				await ReplyAsync(replyDescription);
+			}
 		}
 		#endregion
 	}

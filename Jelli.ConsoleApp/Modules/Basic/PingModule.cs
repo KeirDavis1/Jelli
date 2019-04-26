@@ -11,9 +11,9 @@ namespace Jelli.ConsoleApp.Modules.Basic
 		#region Methods
 		[Command("ping")]
 		[Alias("pong", "hello")]
-		public Task PingAsync()
+		public async Task PingAsync()
 		{
-			return ReplyAsync("Pong!");
+			await ReplyAsync("Pong!");
 		}
 		#endregion
 	}
