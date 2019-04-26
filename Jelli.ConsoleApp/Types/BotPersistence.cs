@@ -5,13 +5,13 @@ namespace Jelli.ConsoleApp.Types
 	public class BotPersistence
 	{
 		#region Properties
-		private DateTime startTime { get; set; }
+		private DateTime _startTime { get; set; }
 		#endregion
 
 		#region Constructor
 		public BotPersistence()
 		{
-			this.startTime = DateTime.UtcNow;
+			this._startTime = DateTime.UtcNow;
 		}
 		#endregion
 
@@ -19,7 +19,7 @@ namespace Jelli.ConsoleApp.Types
 		public TimeSpan GetUptime()
 		{
 			// Return the date difference between startup and now
-			return DateTime.UtcNow - startTime;
+			return DateTime.UtcNow - _startTime;
 		}
 		#endregion
 	}
