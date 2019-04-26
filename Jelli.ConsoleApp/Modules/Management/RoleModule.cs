@@ -83,27 +83,13 @@ namespace Jelli.ConsoleApp.Modules.Management
 		[Command("create")]
 		[RequireUserPermission(GuildPermission.ManageRoles)]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
-		public async Task RoleCreateAsync(string roleName, string displayName = null)
+		public async Task RoleCreateNewAsync(IRole role, string displayName = null)
 		{
-			var matchingRoles = Context.Guild.Roles.Where(a => a.Name == roleName);
-			if (matchingRoles.Count() > 1)
-			{
-				await ReplyAsync("Found too many matching roles.");
-				return;
-			}
-			if (!matchingRoles.Any())
-			{
-				await ReplyAsync("No matching roles found.");
-				return;
-			}
-			var matchedRole = matchingRoles.First();
-
 			if (displayName == null)
 			{
 				// Allow fallback to the role name
-				displayName = roleName;
+				displayName = role.Name;
 			}
-
 
 			var guildCheck = await _guildService.GetGuildAsync(Context.Guild.Id);
 			if (!guildCheck.Success)
@@ -120,11 +106,11 @@ namespace Jelli.ConsoleApp.Modules.Management
 			}
 
 			// Create the role in the db
-			var response = await _guildService.CreateGuildRoleAsync(Context.Guild.Id, matchedRole.Id, displayName);
+			var response = await _guildService.CreateGuildRoleAsync(Context.Guild.Id, role.Id, displayName);
 			if (response.Success)
 			{
 				// Created role
-				await ReplyAsync($"Bound the role `{roleName}` to `{displayName}`. To get this role, run `!role apply {displayName}`!");
+				await ReplyAsync($"Bound the role `{role.Name}` to `{displayName}`. To get this role, run `!role apply {displayName}`!");
 				return;
 			}
 			await ReplyAsync("Failed to create the role in our system.");
