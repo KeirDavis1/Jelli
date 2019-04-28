@@ -7,12 +7,13 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Discord.Addons.Interactive;
 
 namespace Jelli.ConsoleApp.Modules.Management
 {
 	[Group("role")]
 	[RequireContext(ContextType.Guild)]
-	public class RoleModule : ModuleBase<SocketCommandContext>
+	public class RoleModule : InteractiveBase
 	{
 		#region Properties
 		private readonly IGuildService _guildService;
@@ -28,7 +29,7 @@ namespace Jelli.ConsoleApp.Modules.Management
 		#region Methods
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		[Command("apply")]
-		public async Task RoleApplyAsync(string displayName)
+		public async Task RoleApplyAsync([Remainder] string displayName)
 		{
 			var response = await _guildService.GetGuildRoleAsync(Context.Guild.Id, displayName);
 			if (response.Success)
@@ -51,6 +52,35 @@ namespace Jelli.ConsoleApp.Modules.Management
 			}
 			await ReplyAsync("Couldn't find that role");
 		}
+
+		[Command("list")]
+		[Alias("show", "all")]
+		public async Task RoleListAsync()
+		{
+			var response = await _guildService.GetGuildRolesAsync(Context.Guild.Id);
+			if (!response.Success)
+			{
+				// Database couldn't get the guild roles
+				await ReplyAsync("Could not get roles at this time.");
+				return;
+			}
+			if (!response.ServiceObject.Any())
+			{
+				// No roles found in the database
+				await ReplyAsync("There are no roles available at this time.");
+				return;
+			}
+			var message = string.Join("\n", response.ServiceObject.Select(a => a.RoleDisplayName));
+
+			var paginatedMessage = new PaginatedMessage
+			{
+				Title = $"Available Roles for {Context.Guild.Name}",
+				Pages = message.TextToPages(1536)
+			};
+
+			await PagedReplyAsync(paginatedMessage);
+		}
+
 
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		[Command("relieve")]
@@ -81,6 +111,7 @@ namespace Jelli.ConsoleApp.Modules.Management
 		}
 
 		[Command("create")]
+		[Alias("add", "new")]
 		[RequireUserPermission(GuildPermission.ManageRoles)]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		public async Task RoleCreateNewAsync(IRole role, string displayName = null)

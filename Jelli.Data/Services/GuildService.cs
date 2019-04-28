@@ -170,9 +170,10 @@ namespace Jelli.Data.Services
 			return new ServiceResponse<GuildRole>(null, success: false, message: "Failed to create guild role");
 		}
 
-		public Task<ServiceResponse<IEnumerable<GuildRole>>> GetGuildRolesAsync(ulong guildId)
+		public async Task<ServiceResponse<IEnumerable<GuildRole>>> GetGuildRolesAsync(ulong guildId)
 		{
-			throw new NotImplementedException();
+			var dbRoles = await _guildRoleRepository.GetGuildRolesAsync(guildId);
+			return new ServiceResponse<IEnumerable<GuildRole>>(dbRoles);
 		}
 
 		public async Task<ServiceResponse<GuildRole>> GetGuildRoleAsync(ulong guildId, string roleDisplayName)
