@@ -30,18 +30,25 @@ namespace Jelli.ConsoleApp.Modules.Miscellaneous
 		[RequireUserPermission(GuildPermission.ManageChannels)]
 		public async Task CustomCommandCreateAsync(string command, [Remainder] string response)
 		{
-			// Create the custom command with the response
-			var serviceResponse = await _guildService.CreateGuildCustomCommandAsync(Context.Guild.Id, command, response);
-
-			// Did the response succeed?
-			if (!serviceResponse.Success)
+			try
 			{
-				// Created failed, let the user know.
-				await ReplyAsync("Failed to create custom command at this time");
-				return;
+				// Create the custom command with the response
+				var serviceResponse = await _guildService.CreateGuildCustomCommandAsync(Context.Guild.Id, command, response);
+
+				// Did the response succeed?
+				if (!serviceResponse.Success)
+				{
+					// Created failed, let the user know.
+					await ReplyAsync("Failed to create custom command at this time");
+					return;
+				}
+				// Let the user know the command was created
+				await ReplyAsync("Custom command created");
 			}
-			// Let the user know the command was created
-			await ReplyAsync("Custom command created");
+			catch (Exception)
+			{
+				await ReplyAsync("Failed to execute custom command");
+			}
 		}
 		#endregion
 	}
