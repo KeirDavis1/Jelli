@@ -31,54 +31,68 @@ namespace Jelli.ConsoleApp.Modules.Management
 		[Command("apply")]
 		public async Task RoleApplyAsync([Remainder] string displayName)
 		{
-			var response = await _guildService.GetGuildRoleAsync(Context.Guild.Id, displayName);
-			if (response.Success)
+			try
 			{
-				var guildUser = (IGuildUser)Context.User;
-				var guildRole = Context.Guild.Roles.FirstOrDefault(a => a.Id == response.ServiceObject.RoleId);
+				var response = await _guildService.GetGuildRoleAsync(Context.Guild.Id, displayName);
+				if (response.Success)
+				{
+					var guildUser = (IGuildUser)Context.User;
+					var guildRole = Context.Guild.Roles.FirstOrDefault(a => a.Id == response.ServiceObject.RoleId);
 
-				// Does the role exist in the server?
-				if (guildRole != null)
-				{
-					// Add role to user
-					await guildUser.AddRoleAsync((IRole)guildRole);
-					await ReplyAsync("Role applied!");
-					return;
+					// Does the role exist in the server?
+					if (guildRole != null)
+					{
+						// Add role to user
+						await guildUser.AddRoleAsync((IRole)guildRole);
+						await ReplyAsync("Role applied!");
+						return;
+					}
+					else
+					{
+						// TODO Delete the role
+					}
 				}
-				else
-				{
-					// TODO Delete the role
-				}
+				await ReplyAsync("Couldn't find that role");
 			}
-			await ReplyAsync("Couldn't find that role");
+			catch (Exception)
+			{
+				await ReplyAsync("Failed to apply user role");
+			}
 		}
 
 		[Command("list")]
 		[Alias("show", "all")]
 		public async Task RoleListAsync()
 		{
-			var response = await _guildService.GetGuildRolesAsync(Context.Guild.Id);
-			if (!response.Success)
+			try
 			{
-				// Database couldn't get the guild roles
-				await ReplyAsync("Could not get roles at this time.");
-				return;
-			}
-			if (!response.ServiceObject.Any())
-			{
-				// No roles found in the database
-				await ReplyAsync("There are no roles available at this time.");
-				return;
-			}
-			var message = string.Join("\n", response.ServiceObject.Select(a => a.RoleDisplayName));
+				var response = await _guildService.GetGuildRolesAsync(Context.Guild.Id);
+				if (!response.Success)
+				{
+					// Database couldn't get the guild roles
+					await ReplyAsync("Could not get roles at this time.");
+					return;
+				}
+				if (!response.ServiceObject.Any())
+				{
+					// No roles found in the database
+					await ReplyAsync("There are no roles available at this time.");
+					return;
+				}
+				var message = string.Join("\n", response.ServiceObject.Select(a => a.RoleDisplayName));
 
-			var paginatedMessage = new PaginatedMessage
-			{
-				Title = $"Available Roles for {Context.Guild.Name}",
-				Pages = message.TextToPages(1536)
-			};
+				var paginatedMessage = new PaginatedMessage
+				{
+					Title = $"Available Roles for {Context.Guild.Name}",
+					Pages = message.TextToPages(1536)
+				};
 
-			await PagedReplyAsync(paginatedMessage);
+				await PagedReplyAsync(paginatedMessage);
+			}
+			catch (Exception)
+			{
+				await ReplyAsync("Failed to list the roles");
+			}
 		}
 
 
@@ -87,27 +101,34 @@ namespace Jelli.ConsoleApp.Modules.Management
 		[Alias("revoke", "remove", "leave")]
 		public async Task RoleRelieveAsync(string displayName)
 		{
-			var response = await _guildService.GetGuildRoleAsync(Context.Guild.Id, displayName);
-			if (response.Success)
+			try
 			{
-				var guildUser = (IGuildUser)Context.User;
-				var guildRole = Context.Guild.Roles.FirstOrDefault(a => a.Id == response.ServiceObject.RoleId);
-
-				// Does the role exist in the server?
-				if (guildRole != null)
+				var response = await _guildService.GetGuildRoleAsync(Context.Guild.Id, displayName);
+				if (response.Success)
 				{
-					// Add role to user
-					await guildUser.RemoveRoleAsync((IRole)guildRole);
-					await ReplyAsync("Role relieved!");
-					return;
-				}
-				else
-				{
-					// TODO Delete the role
-				}
+					var guildUser = (IGuildUser)Context.User;
+					var guildRole = Context.Guild.Roles.FirstOrDefault(a => a.Id == response.ServiceObject.RoleId);
 
+					// Does the role exist in the server?
+					if (guildRole != null)
+					{
+						// Add role to user
+						await guildUser.RemoveRoleAsync((IRole)guildRole);
+						await ReplyAsync("Role relieved!");
+						return;
+					}
+					else
+					{
+						// TODO Delete the role
+					}
+
+				}
+				await ReplyAsync("Couldn't find that role");
 			}
-			await ReplyAsync("Couldn't find that role");
+			catch (Exception)
+			{
+				await ReplyAsync("Faled to remove the role");
+			}
 		}
 
 		[Command("create")]
@@ -116,35 +137,42 @@ namespace Jelli.ConsoleApp.Modules.Management
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		public async Task RoleCreateNewAsync(IRole role, string displayName = null)
 		{
-			if (displayName == null)
+			try
 			{
-				// Allow fallback to the role name
-				displayName = role.Name;
-			}
-
-			var guildCheck = await _guildService.GetGuildAsync(Context.Guild.Id);
-			if (!guildCheck.Success)
-			{
-				// Setup the guild
-				var guildDb = await _guildService.CreateGuildAsync(Context.Guild.Id);
-				if (!guildDb.Success)
+				if (displayName == null)
 				{
-					// Couldn't register the guild
-					// TODO Add a better logging method
-					await ReplyAsync("Failed to register guild in our system.");
+					// Allow fallback to the role name
+					displayName = role.Name;
+				}
+
+				var guildCheck = await _guildService.GetGuildAsync(Context.Guild.Id);
+				if (!guildCheck.Success)
+				{
+					// Setup the guild
+					var guildDb = await _guildService.CreateGuildAsync(Context.Guild.Id);
+					if (!guildDb.Success)
+					{
+						// Couldn't register the guild
+						// TODO Add a better logging method
+						await ReplyAsync("Failed to register guild in our system.");
+						return;
+					}
+				}
+
+				// Create the role in the db
+				var response = await _guildService.CreateGuildRoleAsync(Context.Guild.Id, role.Id, displayName);
+				if (response.Success)
+				{
+					// Created role
+					await ReplyAsync($"Bound the role `{role.Name}` to `{displayName}`. To get this role, run `!role apply {displayName}`!");
 					return;
 				}
+				await ReplyAsync("Failed to create the role in our system.");
 			}
-
-			// Create the role in the db
-			var response = await _guildService.CreateGuildRoleAsync(Context.Guild.Id, role.Id, displayName);
-			if (response.Success)
+			catch (Exception)
 			{
-				// Created role
-				await ReplyAsync($"Bound the role `{role.Name}` to `{displayName}`. To get this role, run `!role apply {displayName}`!");
-				return;
+				await RoleApplyAsync("Failed to create new role");
 			}
-			await ReplyAsync("Failed to create the role in our system.");
 		}
 		#endregion
 	}
