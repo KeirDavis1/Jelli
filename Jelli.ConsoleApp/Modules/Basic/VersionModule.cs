@@ -15,30 +15,37 @@ namespace Jelli.ConsoleApp.Modules.Basic
 		[Alias("v", "ver")]
 		public async Task VersionAsync()
 		{
-			var embedColour = Color.Blue;
-			if (Context.Guild != null)
-			{
-				embedColour = Context.Guild.GetHighestRole(Context.Guild.CurrentUser)?.Color ?? embedColour;
-			}
-
-			var replyDescription = $":tada: We're running on version {Program.Version}!";
-
-			var embed = new EmbedBuilder
-			{
-				Title = "Version",
-				Description = replyDescription,
-				ThumbnailUrl = Context.Client.CurrentUser.GetAvatarUrl(),
-				Color = embedColour
-			};
-
 			try
 			{
-				await ReplyAsync(embed: embed.Build());
+				var embedColour = Color.Blue;
+				if (Context.Guild != null)
+				{
+					embedColour = Context.Guild.GetHighestRole(Context.Guild.CurrentUser)?.Color ?? embedColour;
+				}
+
+				var replyDescription = $":tada: We're running on version {Program.Version}!";
+
+				var embed = new EmbedBuilder
+				{
+					Title = "Version",
+					Description = replyDescription,
+					ThumbnailUrl = Context.Client.CurrentUser.GetAvatarUrl(),
+					Color = embedColour
+				};
+
+				try
+				{
+					await ReplyAsync(embed: embed.Build());
+				}
+				catch (Exception)
+				{
+					// This may occurr when there is no permission for embeds
+					await ReplyAsync(replyDescription);
+				}
 			}
 			catch (Exception)
 			{
-				// This may occurr when there is no permission for embeds
-				await ReplyAsync(replyDescription);
+				await ReplyAsync("Failed to get version");
 			}
 		}
 		#endregion
