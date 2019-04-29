@@ -34,13 +34,20 @@ namespace Jelli.ConsoleApp.Modules.Administration
 		[Alias("create", "new")]
 		public async Task NotesAddAsync(IGuildUser user, [Remainder] string note)
 		{
-			var response = await _guildService.CreateGuildUserNoteAsync(Context.Guild.Id, user.Id, Context.User.Id, note);
-			if (response.Success)
+			try
 			{
-				await ReplyAsync("Note added.");
-				return;
+				var response = await _guildService.CreateGuildUserNoteAsync(Context.Guild.Id, user.Id, Context.User.Id, note);
+				if (response.Success)
+				{
+					await ReplyAsync("Note added");
+					return;
+				}
 			}
-			await ReplyAsync("Note failed to add.");
+			catch (Exception)
+			{
+				// Absorb the exception
+			}
+			await ReplyAsync("Note failed to add");
 		}
 
 		[RequireUserPermission(GuildPermission.ManageChannels)]
@@ -49,56 +56,64 @@ namespace Jelli.ConsoleApp.Modules.Administration
 		[Alias("get", "show")]
 		public async Task NotesListAsync(IGuildUser user)
 		{
-			var response = await _guildService.GetGuildUserNotesAsync(Context.Guild.Id, user.Id);
-			if (response.Success)
+			try
 			{
-				var pages = new List<string>();
-				int page = 0;
-				foreach (var note in response.ServiceObject)
+				// Get the notes from the database
+				var response = await _guildService.GetGuildUserNotesAsync(Context.Guild.Id, user.Id);
+				if (response.Success)
 				{
-					if (pages.ElementAtOrDefault(page) == null)
+					var pages = new List<string>();
+					int page = 0;
+					foreach (var note in response.ServiceObject)
 					{
-						pages.Add("");
-					}
-					var pageContent = pages[page];
+						if (pages.ElementAtOrDefault(page) == null)
+						{
+							pages.Add("");
+						}
+						var pageContent = pages[page];
 
-					var content = note.Content;
-					if (note.Content.Length > 1024)
-					{
-						content = note.Content.Substring(0, 1024);
+						var content = note.Content;
+						if (note.Content.Length > 1024)
+						{
+							content = note.Content.Substring(0, 1024);
+						}
+
+						var submitterName = "";
+						var submitterUser = Context.Guild.Users.FirstOrDefault(a => a.Id == note.SubmitterId);
+						if (submitterUser == null)
+						{
+							submitterName = note.SubmitterId.ToString();
+						}
+						else
+						{
+							submitterName = submitterUser.Username;
+						}
+
+						pageContent += $"**[ID {note.Id}] [{note.Created.ToString("o")}] Submitted by {submitterName}**\n{content}\n";
+						pages[page] = pageContent;
+
+						if (pageContent.Length > 1024)
+						{
+							page++;
+						}
 					}
 
-					var submitterName = "";
-					var submitterUser = Context.Guild.Users.FirstOrDefault(a => a.Id == note.SubmitterId);
-					if (submitterUser == null)
+					if (!pages.Any())
 					{
-						submitterName = note.SubmitterId.ToString();
+						await ReplyAsync("There are no notes for that user");
 					}
 					else
 					{
-						submitterName = submitterUser.Username;
+						await PagedReplyAsync(pages.ToList());
 					}
-
-					pageContent += $"**[ID {note.Id}] [{note.Created.ToString("o")}] Submitted by {submitterName}**\n{content}\n";
-					pages[page] = pageContent;
-
-					if (pageContent.Length > 1024)
-					{
-						page++;
-					}
+					return;
 				}
-
-				if (!pages.Any())
-				{
-					await ReplyAsync("There's no notes for that user.");
-				}
-				else
-				{
-					await PagedReplyAsync(pages.ToList());
-				}
-				return;
 			}
-			await ReplyAsync("Note failed to get.");
+			catch (Exception)
+			{
+				// Absorb the exception
+			}
+			await ReplyAsync("Failed to get notes");
 		}
 		#endregion
 	}
