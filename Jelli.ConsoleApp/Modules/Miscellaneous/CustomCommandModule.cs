@@ -1,3 +1,4 @@
+using Discord;
 using Discord.Commands;
 using Jelli.Data.Services.Interfaces;
 using System;
@@ -26,6 +27,7 @@ namespace Jelli.ConsoleApp.Modules.Miscellaneous
 		#region Methods
 		[Command("create")]
 		[Alias("new", "add")]
+		[RequireUserPermission(GuildPermission.ManageChannels)]
 		public async Task CustomCommandCreateAsync(string command, [Remainder] string response)
 		{
 			// Create the custom command with the response
