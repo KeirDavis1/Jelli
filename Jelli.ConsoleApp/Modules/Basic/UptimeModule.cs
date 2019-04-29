@@ -25,30 +25,37 @@ namespace Jelli.ConsoleApp.Modules.Basic
 		[Alias("ut")]
 		public async Task UptimeAsync()
 		{
-			var embedColour = Color.Blue;
-			if (Context.Guild != null)
-			{
-				embedColour = Context.Guild.GetHighestRole(Context.Guild.CurrentUser)?.Color ?? embedColour;
-			}
-
-			var replyDescription = $":timer: We've been running for {_botPersistence.GetUptime().ToString()}";
-
-			var embed = new EmbedBuilder
-			{
-				Title = "Uptime",
-				Description = replyDescription,
-				ThumbnailUrl = Context.Client.CurrentUser.GetAvatarUrl(),
-				Color = embedColour
-			};
-
 			try
 			{
-				await ReplyAsync(embed: embed.Build());
+				var embedColour = Color.Blue;
+				if (Context.Guild != null)
+				{
+					embedColour = Context.Guild.GetHighestRole(Context.Guild.CurrentUser)?.Color ?? embedColour;
+				}
+
+				var replyDescription = $":timer: We've been running for {_botPersistence.GetUptime().ToString()}";
+
+				var embed = new EmbedBuilder
+				{
+					Title = "Uptime",
+					Description = replyDescription,
+					ThumbnailUrl = Context.Client.CurrentUser.GetAvatarUrl(),
+					Color = embedColour
+				};
+
+				try
+				{
+					await ReplyAsync(embed: embed.Build());
+				}
+				catch (Exception)
+				{
+					// This may occurr when there is no permission for embeds
+					await ReplyAsync(replyDescription);
+				}
 			}
 			catch (Exception)
 			{
-				// This may occurr when there is no permission for embeds
-				await ReplyAsync(replyDescription);
+				await ReplyAsync("Failed to get uptime");
 			}
 		}
 		#endregion
