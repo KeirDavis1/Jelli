@@ -69,12 +69,20 @@ namespace Jelli.ConsoleApp.Services
 			// Are we in a guild?
 			if (messageGuild != null)
 			{
-				// Get the guild from the database
-				var guild = await _guildService.GetGuildCommandPrefixAsync(messageGuild.Id);
-				if (guild.Success)
+				try
 				{
-					// Get the command prefix
-					commandPrefix = guild.ServiceObject ?? commandPrefix;
+					// Get the guild from the database
+					var guild = await _guildService.GetGuildCommandPrefixAsync(messageGuild.Id);
+					if (guild.Success)
+					{
+						// Get the command prefix
+						commandPrefix = guild.ServiceObject ?? commandPrefix;
+					}
+				}
+				catch (Exception)
+				{
+					// Failed to get guild from the database
+					System.Console.WriteLine("Failed to find guild because of an exception");
 				}
 			}
 
@@ -99,15 +107,22 @@ namespace Jelli.ConsoleApp.Services
 				// Handle custom command here.
 				var command = context.Message.Content.Substring(commandPrefix.Length);
 
-				// Get the command from the database
-				var customCommand = await _guildService.GetGuildCustomCommandByCommandAsync(context.Guild.Id, command);
-				if (!customCommand.Success)
+				try
 				{
-					// Could not find a custom command
-					return;
+					// Get the command from the database
+					var customCommand = await _guildService.GetGuildCustomCommandByCommandAsync(context.Guild.Id, command);
+					if (!customCommand.Success)
+					{
+						// Could not find a custom command
+						return;
+					}
+					// Send the response to the channel
+					await message.Channel.SendMessageAsync(customCommand.ServiceObject.Response);
 				}
-				// Send the response to the channel
-				await message.Channel.SendMessageAsync(customCommand.ServiceObject.Response);
+				catch (Exception)
+				{
+					await message.Channel.SendMessageAsync("Failed to get custom command");
+				}
 			}
 			// Note that normally a result will be returned by this format, but here
 			// we will handle the result in CommandExecutedAsync,
