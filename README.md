@@ -76,3 +76,17 @@ Commands are listed like the following:
 ## Contributing
 
 _TODO, Contribute to the contributing section_
+
+### Database Changes
+
+Did you make a database change? Don't forget to:
+
+1. Make your changes
+
+2. Create a new migration
+
+`dotnet ef --project Jelli.Data migrations add <MigrationName>`
+
+3. Update the database
+
+`dotnet ef --project Jelli.ConsoleApp database update`
