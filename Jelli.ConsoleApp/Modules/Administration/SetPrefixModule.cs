@@ -27,13 +27,21 @@ namespace Jelli.ConsoleApp.Modules.Administration
 		[RequireUserPermission(GuildPermission.Administrator)]
 		public async Task SetPrefixAsync([Remainder] string prefix)
 		{
-			var prefixCall = await _guildService.SetGuildCommandPrefixAsync(Context.Guild.Id, prefix);
-			if (prefixCall.Success)
+			try
 			{
-				await ReplyAsync($"I will now listen to commands with a prefix of `{Format.Sanitize(prefix)}`");
-			} else
+				var prefixCall = await _guildService.SetGuildCommandPrefixAsync(Context.Guild.Id, prefix);
+				if (prefixCall.Success)
+				{
+					await ReplyAsync($"I will now listen to commands with a prefix of `{Format.Sanitize(prefix)}`");
+				}
+				else
+				{
+					await ReplyAsync("I couldn't set the prefix, try again later.");
+				}
+			}
+			catch (Exception)
 			{
-				await ReplyAsync($"I couldn't set the prefix, try again later.");
+				await ReplyAsync("Failed to set the prefix");
 			}
 		}
 		#endregion
