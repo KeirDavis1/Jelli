@@ -92,7 +92,23 @@ namespace Jelli.ConsoleApp.Services
 			// Perform the execution of the command. In this method,
 			// the command service will perform precondition and parsing check
 			// then execute the command if one is matched.
-			await _commands.ExecuteAsync(context, argPos, _services);
+			var commandResponse = await _commands.ExecuteAsync(context, argPos, _services);
+
+			if (!commandResponse.IsSuccess && context.Guild != null)
+			{
+				// Handle custom command here.
+				var command = context.Message.Content.Substring(commandPrefix.Length);
+
+				// Get the command from the database
+				var customCommand = await _guildService.GetGuildCustomCommandByCommandAsync(context.Guild.Id, command);
+				if (!customCommand.Success)
+				{
+					// Could not find a custom command
+					return;
+				}
+				// Send the response to the channel
+				await message.Channel.SendMessageAsync(customCommand.ServiceObject.Response);
+			}
 			// Note that normally a result will be returned by this format, but here
 			// we will handle the result in CommandExecutedAsync,
 		}

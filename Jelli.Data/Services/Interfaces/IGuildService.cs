@@ -27,6 +27,9 @@ namespace Jelli.Data.Services.Interfaces
 
 		Task<ServiceResponse<GuildUserNote>> CreateGuildUserNoteAsync(ulong guildId, ulong userId, ulong submitterId, string content);
 
+		Task<ServiceResponse<GuildCustomCommand>> GetGuildCustomCommandByCommandAsync(ulong guildId, string command);
+
+		Task<ServiceResponse<GuildCustomCommand>> CreateGuildCustomCommandAsync(ulong guildId, string command, string response);
 	}
 }
 

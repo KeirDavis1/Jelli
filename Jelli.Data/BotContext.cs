@@ -10,6 +10,7 @@ namespace Jelli.Data
 		public DbSet<Guild> Guilds { get; set; }
 		public DbSet<GuildRole> GuildRoles { get; set; }
 		public DbSet<GuildUserNote> GuildUserNotes { get; set; }
+		public DbSet<GuildCustomCommand> GuildCustomCommands { get; set; }
 		#endregion
 
 		#region Constructor

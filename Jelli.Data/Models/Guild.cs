@@ -13,5 +13,6 @@ namespace Jelli.Data.Models
 
 		public List<GuildRole> GuildRoles { get; set; }
 		public List<GuildUserNote> GuildUserNotes { get; set; }
+		public List<GuildCustomCommand> GuildCustomCommands { get; set; }
 	}
 }

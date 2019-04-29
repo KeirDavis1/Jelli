@@ -15,15 +15,17 @@ namespace Jelli.Data.Services
 		private readonly IGuildRepository _guildRepository;
 		private readonly IGuildRoleRepository _guildRoleRepository;
 		private readonly IGuildUserNoteRepository _guildUserNoteRepository;
+		private readonly IGuildCustomCommandRepository _guildCustomCommandRepository;
 		private readonly IMemoryCache _memoryCache;
 		#endregion
 
 		#region Constructor
-		public GuildService(IGuildRepository guildRepository, IGuildRoleRepository guildRoleRepository, IGuildUserNoteRepository guildUserNoteRepository, IMemoryCache memoryCache)
+		public GuildService(IGuildRepository guildRepository, IGuildRoleRepository guildRoleRepository, IGuildUserNoteRepository guildUserNoteRepository, IGuildCustomCommandRepository guildCustomCommandRepository, IMemoryCache memoryCache)
 		{
 			_guildRepository = guildRepository;
 			_guildRoleRepository = guildRoleRepository;
 			_guildUserNoteRepository = guildUserNoteRepository;
+			_guildCustomCommandRepository = guildCustomCommandRepository;
 			_memoryCache = memoryCache;
 		}
 		#endregion
@@ -223,6 +225,46 @@ namespace Jelli.Data.Services
 				return new ServiceResponse<GuildUserNote>(dbResponse);
 			}
 			return new ServiceResponse<GuildUserNote>(null, success: false, message: "Failed to get create the note for this user");
+		}
+
+		public async Task<ServiceResponse<GuildCustomCommand>> GetGuildCustomCommandByCommandAsync(ulong guildId, string command)
+		{
+			var commands = await _guildCustomCommandRepository.GetGuildCustomCommandsAsync(guildId);
+			foreach (var dbCommand in commands)
+			{
+				if (dbCommand.Command.Equals(command, StringComparison.CurrentCultureIgnoreCase))
+				{
+					return new ServiceResponse<GuildCustomCommand>(dbCommand);
+				}
+			}
+			return new ServiceResponse<GuildCustomCommand>(null, success: false, message: "Could not find command for this guild");
+		}
+
+		public async Task<ServiceResponse<GuildCustomCommand>> CreateGuildCustomCommandAsync(ulong guildId, string command, string response)
+		{
+			if (await _guildRepository.GetGuildAsync(guildId) == null)
+			{
+				var guildDb = await _guildRepository.CreateGuildAsync(new Guild
+				{
+					GuildId = guildId
+				});
+				if (guildDb == null)
+				{
+					return new ServiceResponse<GuildCustomCommand>(null, success: false, message: "Couldn't create guild");
+				}
+			}
+
+			var dbResponse = await _guildCustomCommandRepository.CreateGuildCustomCommandAsync(new GuildCustomCommand
+			{
+				GuildId = guildId,
+				Command = command,
+				Response = response
+			});
+			if (dbResponse != null)
+			{
+				return new ServiceResponse<GuildCustomCommand>(dbResponse);
+			}
+			return new ServiceResponse<GuildCustomCommand>(null, success: false, message: "Failed to get create the custom command for this guild");
 		}
 		#endregion
 	}

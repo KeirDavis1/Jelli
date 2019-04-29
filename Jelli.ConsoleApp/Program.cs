@@ -83,6 +83,7 @@ namespace Jelli.ConsoleApp
 					.AddScoped<IGuildRepository, GuildRepository>()
 					.AddScoped<IGuildRoleRepository, GuildRoleRepository>()
 					.AddScoped<IGuildUserNoteRepository, GuildUserNoteRepository>()
+					.AddScoped<IGuildCustomCommandRepository, GuildCustomCommandRepository>()
 					.AddScoped<IGuildService, GuildService>()
 					.BuildServiceProvider();
 		}
