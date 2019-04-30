@@ -80,10 +80,13 @@ namespace Jelli.ConsoleApp
 					.AddMemoryCache()
 					.AddEntityFrameworkSqlite()
 					.AddDbContext<BotContext>()
+					// Database repository access types
 					.AddScoped<IGuildRepository, GuildRepository>()
 					.AddScoped<IGuildRoleRepository, GuildRoleRepository>()
 					.AddScoped<IGuildUserNoteRepository, GuildUserNoteRepository>()
 					.AddScoped<IGuildCustomCommandRepository, GuildCustomCommandRepository>()
+					.AddScoped<IChannelEnforcementRepository, ChannelEnforcementRepository>()
+					// Service to interact with repositories
 					.AddScoped<IGuildService, GuildService>()
 					.BuildServiceProvider();
 		}
