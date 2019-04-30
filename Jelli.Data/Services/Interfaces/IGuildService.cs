@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Jelli.Data.Models;
 using Jelli.Data.Services.Communication;
+using Jelli.Data.Types;
 
 namespace Jelli.Data.Services.Interfaces
 {
@@ -30,6 +31,12 @@ namespace Jelli.Data.Services.Interfaces
 		Task<ServiceResponse<GuildCustomCommand>> GetGuildCustomCommandByCommandAsync(ulong guildId, string command);
 
 		Task<ServiceResponse<GuildCustomCommand>> CreateGuildCustomCommandAsync(ulong guildId, string command, string response);
+
+		Task<ServiceResponse<ChannelEnforcement>> GetChannelEnforcementAsync(ulong guildId, ulong channelId);
+
+		Task<ServiceResponse<ChannelEnforcement>> CreateChannelEnforcementAsync(ulong guildId, ulong channelId);
+
+		Task<ServiceResponse<ChannelEnforcement>> ConfigureChannelEnforcementAsync(ulong guildId, ulong channelId, EEnforcementType type, object value);
 	}
 }
 

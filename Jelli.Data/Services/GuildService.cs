@@ -5,6 +5,7 @@ using Jelli.Data.Models;
 using Jelli.Data.Repositories.Interfaces;
 using Jelli.Data.Services.Communication;
 using Jelli.Data.Services.Interfaces;
+using Jelli.Data.Types;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Jelli.Data.Services
@@ -16,6 +17,7 @@ namespace Jelli.Data.Services
 		private readonly IGuildRoleRepository _guildRoleRepository;
 		private readonly IGuildUserNoteRepository _guildUserNoteRepository;
 		private readonly IGuildCustomCommandRepository _guildCustomCommandRepository;
+		private readonly IChannelEnforcementRepository _channelEnforcementRepository;
 		private readonly IMemoryCache _memoryCache;
 		#endregion
 
@@ -265,6 +267,88 @@ namespace Jelli.Data.Services
 				return new ServiceResponse<GuildCustomCommand>(dbResponse);
 			}
 			return new ServiceResponse<GuildCustomCommand>(null, success: false, message: "Failed to get create the custom command for this guild");
+		}
+
+		public async Task<ServiceResponse<ChannelEnforcement>> GetChannelEnforcementAsync(ulong guildId, ulong channelId)
+		{
+			if (await _guildRepository.GetGuildAsync(guildId) == null)
+			{
+				var guildDb = await _guildRepository.CreateGuildAsync(new Guild
+				{
+					GuildId = guildId
+				});
+				if (guildDb == null)
+				{
+					return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Couldn't create guild");
+				}
+			}
+
+			var dbResponse = await _channelEnforcementRepository.GetChannelEnforcementAsync(guildId, channelId);
+			if (dbResponse != null)
+			{
+				return new ServiceResponse<ChannelEnforcement>(dbResponse);
+			}
+			return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Failed to get the channel enforcement");
+		}
+
+		public async Task<ServiceResponse<ChannelEnforcement>> CreateChannelEnforcementAsync(ulong guildId, ulong channelId)
+		{
+			if ((await GetChannelEnforcementAsync(guildId, channelId)).Success)
+			{
+				return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Channel enforcement is already setup");
+			}
+
+			var dbResponse = await _channelEnforcementRepository.CreateChannelEnforcementAsync(new ChannelEnforcement
+			{
+				GuildId = guildId,
+				ChannelId = channelId
+			});
+			if (dbResponse != null)
+			{
+				return new ServiceResponse<ChannelEnforcement>(dbResponse);
+			}
+			return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Failed to create the channel enforcement");
+		}
+
+		public async Task<ServiceResponse<ChannelEnforcement>> ConfigureChannelEnforcementAsync(ulong guildId, ulong channelId, EEnforcementType type, object value)
+		{
+			var channelEnforcement = await GetChannelEnforcementAsync(guildId, channelId);
+			if (!channelEnforcement.Success)
+			{
+				return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Channel enforcement doesn't exist");
+			}
+
+			var alteredChannelEnforcement = channelEnforcement.ServiceObject;
+
+			// Update the enforcement object
+			switch (type)
+			{
+				case EEnforcementType.Unknown:
+					return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Unknown type to configure");
+				case EEnforcementType.RestrictText:
+					alteredChannelEnforcement.RestrictText = (bool)value;
+					break;
+				case EEnforcementType.RestrictPictures:
+					alteredChannelEnforcement.RestrictPictures = (bool)value;
+					break;
+				case EEnforcementType.MinimumCharacters:
+					alteredChannelEnforcement.MinimumCharacters = (int)value;
+					break;
+				case EEnforcementType.MinimumDiscordAgeDays:
+					alteredChannelEnforcement.MinimumDiscordAgeDays = (int)value;
+					break;
+				case EEnforcementType.MinimumGuildJoinedAgeDays:
+					alteredChannelEnforcement.MinimumGuildJoinedAgeDays = (int)value;
+					break;
+			}
+
+			// Update the object in the database
+			var update = await _channelEnforcementRepository.UpdateChannelEnforcementAsync(alteredChannelEnforcement);
+			if (update != null)
+			{
+				return new ServiceResponse<ChannelEnforcement>(update);
+			}
+			return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Failed to configure");
 		}
 		#endregion
 	}
