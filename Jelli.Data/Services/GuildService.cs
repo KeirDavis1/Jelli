@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Jelli.Data.Models;
 using Jelli.Data.Repositories.Interfaces;
@@ -22,12 +23,13 @@ namespace Jelli.Data.Services
 		#endregion
 
 		#region Constructor
-		public GuildService(IGuildRepository guildRepository, IGuildRoleRepository guildRoleRepository, IGuildUserNoteRepository guildUserNoteRepository, IGuildCustomCommandRepository guildCustomCommandRepository, IMemoryCache memoryCache)
+		public GuildService(IGuildRepository guildRepository, IGuildRoleRepository guildRoleRepository, IGuildUserNoteRepository guildUserNoteRepository, IGuildCustomCommandRepository guildCustomCommandRepository, IChannelEnforcementRepository channelEnforcementRepository, IMemoryCache memoryCache)
 		{
 			_guildRepository = guildRepository;
 			_guildRoleRepository = guildRoleRepository;
 			_guildUserNoteRepository = guildUserNoteRepository;
 			_guildCustomCommandRepository = guildCustomCommandRepository;
+			_channelEnforcementRepository = channelEnforcementRepository;
 			_memoryCache = memoryCache;
 		}
 		#endregion
@@ -293,7 +295,8 @@ namespace Jelli.Data.Services
 
 		public async Task<ServiceResponse<ChannelEnforcement>> CreateChannelEnforcementAsync(ulong guildId, ulong channelId)
 		{
-			if ((await GetChannelEnforcementAsync(guildId, channelId)).Success)
+			var existingEnforcement = await GetChannelEnforcementAsync(guildId, channelId);
+			if (existingEnforcement?.ServiceObject != null)
 			{
 				return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Channel enforcement is already setup");
 			}
@@ -310,7 +313,7 @@ namespace Jelli.Data.Services
 			return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Failed to create the channel enforcement");
 		}
 
-		public async Task<ServiceResponse<ChannelEnforcement>> ConfigureChannelEnforcementAsync(ulong guildId, ulong channelId, EEnforcementType type, object value)
+		public async Task<ServiceResponse<ChannelEnforcement>> ConfigureChannelEnforcementAsync(ulong guildId, ulong channelId, EEnforcementType type, string value)
 		{
 			var channelEnforcement = await GetChannelEnforcementAsync(guildId, channelId);
 			if (!channelEnforcement.Success)
@@ -321,24 +324,69 @@ namespace Jelli.Data.Services
 			var alteredChannelEnforcement = channelEnforcement.ServiceObject;
 
 			// Update the enforcement object
+			var trueValues = new string[] { "1", "true", "t", "yes", "y", ":thumbsup:" };
+			var falseValues = new string[] { "0", "false", "f", "no", "n", ":thumbsdown:" };
 			switch (type)
 			{
 				case EEnforcementType.Unknown:
 					return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Unknown type to configure");
 				case EEnforcementType.RestrictText:
-					alteredChannelEnforcement.RestrictText = (bool)value;
+					if (trueValues.Contains(value))
+					{
+						alteredChannelEnforcement.RestrictText = true;
+					}
+					else if (falseValues.Contains(value))
+					{
+						alteredChannelEnforcement.RestrictText = false;
+					}
+					else
+					{
+						return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Unknown value");
+					}
 					break;
 				case EEnforcementType.RestrictPictures:
-					alteredChannelEnforcement.RestrictPictures = (bool)value;
+					if (trueValues.Contains(value))
+					{
+						alteredChannelEnforcement.RestrictPictures = true;
+					}
+					else if (falseValues.Contains(value))
+					{
+						alteredChannelEnforcement.RestrictPictures = false;
+					}
+					else
+					{
+						return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Unknown value");
+					}
 					break;
 				case EEnforcementType.MinimumCharacters:
-					alteredChannelEnforcement.MinimumCharacters = (int)value;
+					try
+					{
+						alteredChannelEnforcement.MinimumCharacters = Convert.ToInt32(value);
+					}
+					catch (Exception)
+					{
+						return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Invalid value");
+					}
 					break;
 				case EEnforcementType.MinimumDiscordAgeDays:
-					alteredChannelEnforcement.MinimumDiscordAgeDays = (int)value;
+					try
+					{
+						alteredChannelEnforcement.MinimumDiscordAgeDays = Convert.ToInt32(value);
+					}
+					catch (Exception)
+					{
+						return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Invalid value");
+					}
 					break;
 				case EEnforcementType.MinimumGuildJoinedAgeDays:
-					alteredChannelEnforcement.MinimumGuildJoinedAgeDays = (int)value;
+					try
+					{
+						alteredChannelEnforcement.MinimumGuildJoinedAgeDays = Convert.ToInt32(value);
+					}
+					catch (Exception)
+					{
+						return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Invalid value");
+					}
 					break;
 			}
 
@@ -349,6 +397,23 @@ namespace Jelli.Data.Services
 				return new ServiceResponse<ChannelEnforcement>(update);
 			}
 			return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Failed to configure");
+		}
+
+		public async Task<ServiceResponse<ChannelEnforcement>> DeleteChannelEnforcementAsync(ulong guildId, ulong channelId)
+		{
+			var channelEnforcement = await GetChannelEnforcementAsync(guildId, channelId);
+			if (!channelEnforcement.Success)
+			{
+				return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Channel enforcement doesn't exist");
+			}
+
+			// Update the object in the database
+			var delete = await _channelEnforcementRepository.DeleteChannelEnforcementAsync(channelEnforcement.ServiceObject);
+			if (delete != null)
+			{
+				return new ServiceResponse<ChannelEnforcement>(delete);
+			}
+			return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Failed to delete");
 		}
 		#endregion
 	}

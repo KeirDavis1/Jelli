@@ -52,6 +52,7 @@ namespace Jelli.ConsoleApp
 
 				client.Log += LogAsync;
 				services.GetRequiredService<CommandService>().Log += LogAsync;
+				services.GetRequiredService<ChannelEnforcerService>();
 
 				await client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("token"));
 				await client.StartAsync();
@@ -76,6 +77,7 @@ namespace Jelli.ConsoleApp
 					.AddSingleton<DiscordSocketClient>()
 					.AddSingleton(_commands)
 					.AddSingleton<CommandHandlingService>()
+					.AddSingleton<ChannelEnforcerService>()
 					.AddSingleton<InteractiveService>()
 					.AddMemoryCache()
 					.AddEntityFrameworkSqlite()

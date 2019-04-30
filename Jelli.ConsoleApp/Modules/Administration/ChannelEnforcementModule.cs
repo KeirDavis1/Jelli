@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.Addons.Interactive;
+using Jelli.Data.Types;
 
 
 namespace Jelli.ConsoleApp.Modules.Administration
@@ -36,13 +37,19 @@ namespace Jelli.ConsoleApp.Modules.Administration
 		{
 			try
 			{
-				await ReplyAsync("In progress");
+				var response = await _guildService.CreateChannelEnforcementAsync(Context.Guild.Id, channel.Id);
+				if (response.Success)
+				{
+					await ReplyAsync("A channel has been setup to be enforced");
+					return;
+				}
+				Console.WriteLine(response.Message);
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				await ReplyAsync("Channel failed to be enforced");
+				System.Console.WriteLine(e.Message);
 			}
-
+			await ReplyAsync("Channel failed to be enforced");
 		}
 
 		[RequireUserPermission(GuildPermission.ManageChannels)]
@@ -52,27 +59,41 @@ namespace Jelli.ConsoleApp.Modules.Administration
 		{
 			try
 			{
-				await ReplyAsync($"In progress");
+				var response = await _guildService.ConfigureChannelEnforcementAsync(Context.Guild.Id, channel.Id, attribute.FromStringToEnforcementType(), value);
+				if (response.Success)
+				{
+					await ReplyAsync("The channel has been successfully configured");
+					return;
+				}
+				Console.WriteLine(response.Message);
 			}
 			catch (Exception)
 			{
-				await ReplyAsync("Channel failed to be configured");
+
 			}
+			await ReplyAsync("Channel failed to be configured");
 		}
 
 		[RequireUserPermission(GuildPermission.ManageChannels)]
-		[Command("configure")]
-		[Alias("c", "conf", "edit", "alter")]
+		[Command("delete")]
+		[Alias("d", "-", "remove", "stop", "disable")]
 		public async Task ChannelEnforcedChannelDeleteAsync(IGuildChannel channel)
 		{
 			try
 			{
-				await ReplyAsync("In progress");
+				var response = await _guildService.DeleteChannelEnforcementAsync(Context.Guild.Id, channel.Id);
+				if (response.Success)
+				{
+					await ReplyAsync("The configured channel has now been deleted");
+					return;
+				}
+				Console.WriteLine(response.Message);
 			}
 			catch (Exception)
 			{
-				await ReplyAsync("Channel failed to be configured");
+
 			}
+			await ReplyAsync("Configured channel failed to be deleted");
 		}
 		#endregion
 	}
