@@ -28,50 +28,16 @@ Commands are listed like the following:
 <argument*> - A multi-word argument you can pass through
 ```
 
-**Administration**
-
-- Ban
-
-  `!ban <user> <reason*>`
-
-  _The bot will ban the `<user>` and associate the `<reason*>` for the ban with it._
-
-  - Bot requires **ban** permission.
-  - Issuing user requires **ban** permission.
-
-- Set Prefix
-
-  `!setprefix <prefix>`
-
-  _The bot will set the prefix for the server to `<prefix>`. If you can no longer access it, you can mention the bot and run the command without the command prefix (`!`)._
-
-**Basic**
-
-- Echo
-
-  `!echo <message*>`
-
-  _The bot will respond with `<message*>` in the channel the user issued the command._
-
-- User Info
-
-  `!userinfo <?user>`
-
-  _The bot will send a formatted message displaying when the user joined discord, user joined the current server and their user ID._
-
-  - The command must be run in a server.
-
-- Version
-
-  `!version`
-
-  _The bot will respond with the applications version in the channel the user issued the command._
-
-- Ping
-
-  `!ping`
-
-  _The bot will respond with "pong" in the channel the user issued the command._
+| Type           | Name        | Command                      | Description                                                                                                                                                             | Requirements                                                               |
+| -------------- | ----------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Administration | Ban         | `!ban <user> <reason*>`      | The bot will ban the `<user>` and associate the `<reason*>` for the ban with it.                                                                                        | Bot requires **ban** permission. Issuing user requires **ban** permission. |
+| Administration | Set Prefix  | `!setprefix <prefix>`        | The bot will set the prefix for the server to `<prefix>`. If you can no longer access it, you can mention the bot and run the command without the command prefix (`!`). |                                                                            |
+| Administration | Create Note | `!notes + <user> <message*>` | Adds a note about a user in the guild                                                                                                                                   |                                                                            |
+| Administration | List Notes  | `!notes list <user>`         | List the notes about a user in the guild                                                                                                                                |                                                                            |
+| Basic          | Echo        | `!echo <message*>`           | The bot will respond with `<message*>` in the channel the user issued the command.                                                                                      |                                                                            |
+| Basic          | User Info   | `!userinfo <user>`           | The bot will send a formatted message displaying when the user joined discord, user joined the current server and their user ID.                                        | The command must be run in a server.                                       |
+| Basic          | Version     | `!userinfo <version>`        | The bot will respond with the applications version in the channel the user issued the command.                                                                          |                                                                            |
+| Basic          | Ping        | `!ping`                      | The bot will respond with "Pong!" in the channel the user issued the command.                                                                                           |                                                                            |
 
 ## Contributing
 
