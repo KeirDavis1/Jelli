@@ -358,6 +358,34 @@ namespace Jelli.Data.Services
 						return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Unknown value");
 					}
 					break;
+				case EEnforcementType.RequiresPictures:
+					if (trueValues.Contains(value))
+					{
+						alteredChannelEnforcement.RequirePictures = true;
+					}
+					else if (falseValues.Contains(value))
+					{
+						alteredChannelEnforcement.RequirePictures = false;
+					}
+					else
+					{
+						return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Unknown value");
+					}
+					break;
+				case EEnforcementType.RequiresText:
+					if (trueValues.Contains(value))
+					{
+						alteredChannelEnforcement.RequireText = true;
+					}
+					else if (falseValues.Contains(value))
+					{
+						alteredChannelEnforcement.RequireText = false;
+					}
+					else
+					{
+						return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Unknown value");
+					}
+					break;
 				case EEnforcementType.MinimumCharacters:
 					try
 					{

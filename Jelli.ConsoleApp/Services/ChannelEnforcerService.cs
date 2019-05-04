@@ -63,13 +63,17 @@ namespace Jelli.ConsoleApp.Services
 					// Minimum character enforcement
 					(enforcer.MinimumCharacters != null && enforcer.MinimumCharacters > message.Content.Length) ||
 					// No text enforcement
-					(enforcer.RestrictText != null && message.Content.Length > 0) ||
+					(enforcer.RestrictText.GetValueOrDefault(false) && message.Content.Length > 0) ||
 					// No picture enforcement
-					(enforcer.RestrictPictures != null && message.Embeds.Any()) ||
+					(enforcer.RestrictPictures.GetValueOrDefault(false) && message.Attachments.Any()) ||
 					// Enforce minimum discord age
 					(enforcer.MinimumDiscordAgeDays != null && enforcer.MinimumDiscordAgeDays > ((IUser)message.Author).DaysSinceCreated()) ||
 					// Enforce minimum guild age
-					(enforcer.MinimumGuildJoinedAgeDays != null && enforcer.MinimumGuildJoinedAgeDays > ((IGuildUser)message.Author).DaysSinceJoined())
+					(enforcer.MinimumGuildJoinedAgeDays != null && enforcer.MinimumGuildJoinedAgeDays > ((IGuildUser)message.Author).DaysSinceJoined()) ||
+					// Enforce requirement of text
+					(enforcer.RequireText.GetValueOrDefault(false) && message.Content.Length <= 0) ||
+					// Enforce requirement of pictures
+					(enforcer.RequirePictures.GetValueOrDefault(false) && !message.Attachments.Any())
 				)
 				{
 					await message.DeleteAsync();

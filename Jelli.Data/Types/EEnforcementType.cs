@@ -8,6 +8,8 @@ namespace Jelli.Data.Types
 		Unknown,
 		RestrictPictures,
 		RestrictText,
+		RequiresText,
+		RequiresPictures,
 		MinimumGuildJoinedAgeDays,
 		MinimumDiscordAgeDays,
 		MinimumCharacters
