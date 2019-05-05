@@ -50,13 +50,6 @@ namespace Jelli.ConsoleApp.Services
 			if (!(rawMessage is SocketUserMessage message)) return;
 			if (message.Source != MessageSource.User) return;
 
-			// Marco, polo response.
-			if (message.Content == "ayy")
-			{
-				await message.Channel.SendMessageAsync("lmao");
-				return;
-			}
-
 			// This value holds the offset where the prefix ends
 			var argPos = 0;
 
@@ -124,8 +117,6 @@ namespace Jelli.ConsoleApp.Services
 					await message.Channel.SendMessageAsync("Failed to get custom command");
 				}
 			}
-			// Note that normally a result will be returned by this format, but here
-			// we will handle the result in CommandExecutedAsync,
 		}
 
 		public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)

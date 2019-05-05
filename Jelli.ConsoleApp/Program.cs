@@ -55,6 +55,7 @@ namespace Jelli.ConsoleApp
 				services.GetRequiredService<ChannelEnforcerService>();
 				services.GetRequiredService<RichPresenceService>();
 				services.GetRequiredService<BotPersistence>();
+				services.GetRequiredService<StaticReplyService>();
 
 				await client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("token"));
 				await client.StartAsync();
@@ -80,6 +81,7 @@ namespace Jelli.ConsoleApp
 					.AddSingleton(_commands)
 					.AddSingleton<CommandHandlingService>()
 					.AddSingleton<ChannelEnforcerService>()
+					.AddSingleton<StaticReplyService>()
 					.AddSingleton<RichPresenceService>()
 					.AddSingleton<InteractiveService>()
 					.AddMemoryCache()
