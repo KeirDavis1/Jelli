@@ -111,6 +111,7 @@ namespace Jelli.ConsoleApp.Services
 
 					if (dbCommand.Success && dbCommand.ServiceObject != null)
 					{
+						// Generate the new command
 						newCommand = $"{dbCommand.ServiceObject.AliasTo}{restOfCommand}";
 						await rawMessage.Channel.SendMessageAsync($"We'll run this soon:tm:: `{newCommand}`");
 					}
@@ -124,12 +125,14 @@ namespace Jelli.ConsoleApp.Services
 			IResult commandResponse = null;
 			if (newCommand != null)
 			{
+				// Command has been changed from a custom command
 				commandResponse = await _commands.ExecuteAsync(context, newCommand, _services);
 			}
 			else
 			{
 				commandResponse = await _commands.ExecuteAsync(context, argPos, _services);
 			}
+
 			if (!commandResponse.IsSuccess && context.Guild != null)
 			{
 				// Handle custom command here.
