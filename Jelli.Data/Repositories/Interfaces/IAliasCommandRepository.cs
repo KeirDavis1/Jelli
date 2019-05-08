@@ -8,12 +8,12 @@ namespace Jelli.Data.Repositories.Interfaces
 	{
 		Task<IEnumerable<AliasCommand>> GetAliasCommandsAsync(ulong guildId);
 
-		Task<AliasCommand> GetAliasCommand(ulong guildId, string command);
+		Task<AliasCommand> GetAliasCommandAsync(ulong guildId, string command);
 
-		Task<AliasCommand> CreateGuildCustomCommandAsync(AliasCommand aliasCommand);
+		Task<AliasCommand> CreateAliasCommandAsync(AliasCommand aliasCommand);
 
-		Task<AliasCommand> DeleteGuildCustomCommandAsync(AliasCommand aliasCommand);
+		Task<AliasCommand> DeleteAliasCommandAsync(AliasCommand aliasCommand);
 
-		Task<AliasCommand> UpdateGuildCustomCommandAsync(AliasCommand aliasCommand);
+		Task<AliasCommand> UpdateAliasCommandAsync(AliasCommand aliasCommand);
 	}
 }
