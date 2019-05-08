@@ -39,6 +39,10 @@ namespace Jelli.Data.Services.Interfaces
 		Task<ServiceResponse<ChannelEnforcement>> ConfigureChannelEnforcementAsync(ulong guildId, ulong channelId, EEnforcementType type, string value);
 
 		Task<ServiceResponse<ChannelEnforcement>> DeleteChannelEnforcementAsync(ulong guildId, ulong channelId);
+
+		Task<ServiceResponse<AliasCommand>> GetAliasCommandByCommandAsync(ulong guildId, string command);
+
+		Task<ServiceResponse<AliasCommand>> CreateAliasCommandAsync(ulong guildId, string command, string aliasTo);
 	}
 }
 

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Jelli.ConsoleApp.Services
@@ -93,8 +94,42 @@ namespace Jelli.ConsoleApp.Services
 			// Perform the execution of the command. In this method,
 			// the command service will perform precondition and parsing check
 			// then execute the command if one is matched.
-			var commandResponse = await _commands.ExecuteAsync(context, argPos, _services);
 
+			string newCommand = null;
+
+			if (messageGuild != null && message.Content.Length > commandPrefix.Length)
+			{
+				// We're in a guild. Check for aliased commands
+
+				// Remove the ! and get the first word from the command
+				try
+				{
+					var possibleCommand = message.Content.Substring(commandPrefix.Length).Split(" ").First();
+					var restOfCommand = message.Content.Substring(commandPrefix.Length + possibleCommand.Length);
+
+					var dbCommand = await _guildService.GetAliasCommandByCommandAsync(messageGuild.Id, possibleCommand);
+
+					if (dbCommand.Success && dbCommand.ServiceObject != null)
+					{
+						newCommand = $"{dbCommand.ServiceObject.AliasTo}{restOfCommand}";
+						await rawMessage.Channel.SendMessageAsync($"We'll run this soon:tm:: `{newCommand}`");
+					}
+				}
+				catch (Exception)
+				{
+					System.Console.WriteLine("Error caught in custom command handler");
+				}
+			}
+
+			IResult commandResponse = null;
+			if (newCommand != null)
+			{
+				commandResponse = await _commands.ExecuteAsync(context, newCommand, _services);
+			}
+			else
+			{
+				commandResponse = await _commands.ExecuteAsync(context, argPos, _services);
+			}
 			if (!commandResponse.IsSuccess && context.Guild != null)
 			{
 				// Handle custom command here.

@@ -19,17 +19,19 @@ namespace Jelli.Data.Services
 		private readonly IGuildUserNoteRepository _guildUserNoteRepository;
 		private readonly IGuildCustomCommandRepository _guildCustomCommandRepository;
 		private readonly IChannelEnforcementRepository _channelEnforcementRepository;
+		private readonly IAliasCommandRepository _aliasCommandRepository;
 		private readonly IMemoryCache _memoryCache;
 		#endregion
 
 		#region Constructor
-		public GuildService(IGuildRepository guildRepository, IGuildRoleRepository guildRoleRepository, IGuildUserNoteRepository guildUserNoteRepository, IGuildCustomCommandRepository guildCustomCommandRepository, IChannelEnforcementRepository channelEnforcementRepository, IMemoryCache memoryCache)
+		public GuildService(IGuildRepository guildRepository, IGuildRoleRepository guildRoleRepository, IGuildUserNoteRepository guildUserNoteRepository, IGuildCustomCommandRepository guildCustomCommandRepository, IChannelEnforcementRepository channelEnforcementRepository, IAliasCommandRepository aliasCommandRepository, IMemoryCache memoryCache)
 		{
 			_guildRepository = guildRepository;
 			_guildRoleRepository = guildRoleRepository;
 			_guildUserNoteRepository = guildUserNoteRepository;
 			_guildCustomCommandRepository = guildCustomCommandRepository;
 			_channelEnforcementRepository = channelEnforcementRepository;
+			_aliasCommandRepository = aliasCommandRepository;
 			_memoryCache = memoryCache;
 		}
 		#endregion
@@ -442,6 +444,33 @@ namespace Jelli.Data.Services
 				return new ServiceResponse<ChannelEnforcement>(delete);
 			}
 			return new ServiceResponse<ChannelEnforcement>(null, success: false, message: "Failed to delete");
+		}
+
+		public async Task<ServiceResponse<AliasCommand>> GetAliasCommandByCommandAsync(ulong guildId, string command)
+		{
+			var aliasCommand = await _aliasCommandRepository.GetAliasCommandAsync(guildId, command);
+			return new ServiceResponse<AliasCommand>(aliasCommand);
+		}
+
+		public async Task<ServiceResponse<AliasCommand>> CreateAliasCommandAsync(ulong guildId, string command, string aliasTo)
+		{
+			var existingEnforcement = await GetAliasCommandByCommandAsync(guildId, command);
+			if (existingEnforcement?.ServiceObject != null)
+			{
+				return new ServiceResponse<AliasCommand>(null, success: false, message: "Alias command is already setup");
+			}
+
+			var dbResponse = await _aliasCommandRepository.CreateAliasCommandAsync(new AliasCommand
+			{
+				GuildId = guildId,
+				Command = command,
+				AliasTo = aliasTo
+			});
+			if (dbResponse != null)
+			{
+				return new ServiceResponse<AliasCommand>(dbResponse);
+			}
+			return new ServiceResponse<AliasCommand>(null, success: false, message: "Failed to create the alias command");
 		}
 		#endregion
 	}

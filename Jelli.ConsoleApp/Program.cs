@@ -92,6 +92,7 @@ namespace Jelli.ConsoleApp
 					.AddScoped<IGuildRoleRepository, GuildRoleRepository>()
 					.AddScoped<IGuildUserNoteRepository, GuildUserNoteRepository>()
 					.AddScoped<IGuildCustomCommandRepository, GuildCustomCommandRepository>()
+					.AddScoped<IAliasCommandRepository, AliasCommandRepository>()
 					.AddScoped<IChannelEnforcementRepository, ChannelEnforcementRepository>()
 					// Service to interact with repositories
 					.AddScoped<IGuildService, GuildService>()
