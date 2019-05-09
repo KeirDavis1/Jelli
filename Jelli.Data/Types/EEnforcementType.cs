@@ -21,10 +21,9 @@ namespace Jelli.Data.Types
 
 		public static EEnforcementType FromStringToEnforcementType(this string type)
 		{
-			EEnforcementType output;
 			try
 			{
-				EEnforcementType.TryParse(type, true, out output);
+				EEnforcementType.TryParse(type, true, out EEnforcementType output);
 				return output;
 			}
 			catch (ArgumentException)
