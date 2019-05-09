@@ -97,6 +97,7 @@ namespace Jelli.ConsoleApp.Services
 
 			string newCommand = null;
 
+			// Alias command handler
 			if (messageGuild != null && message.Content.Length > commandPrefix.Length)
 			{
 				// We're in a guild. Check for aliased commands
@@ -113,7 +114,6 @@ namespace Jelli.ConsoleApp.Services
 					{
 						// Generate the new command
 						newCommand = $"{dbCommand.ServiceObject.AliasTo}{restOfCommand}";
-						await rawMessage.Channel.SendMessageAsync($"We'll run this soon:tm:: `{newCommand}`");
 					}
 				}
 				catch (Exception)

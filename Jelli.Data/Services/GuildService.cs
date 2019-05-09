@@ -472,6 +472,40 @@ namespace Jelli.Data.Services
 			}
 			return new ServiceResponse<AliasCommand>(null, success: false, message: "Failed to create the alias command");
 		}
+
+		public async Task<ServiceResponse<AliasCommand>> EditAliasCommandAsync(ulong guildId, string command, string aliasTo)
+		{
+			var existingEnforcement = await GetAliasCommandByCommandAsync(guildId, command);
+			if (existingEnforcement?.ServiceObject == null)
+			{
+				return new ServiceResponse<AliasCommand>(null, success: false, message: "Alias command is not setup");
+			}
+
+			existingEnforcement.ServiceObject.AliasTo = aliasTo;
+
+			var dbResponse = await _aliasCommandRepository.UpdateAliasCommandAsync(existingEnforcement.ServiceObject);
+			if (dbResponse != null)
+			{
+				return new ServiceResponse<AliasCommand>(dbResponse);
+			}
+			return new ServiceResponse<AliasCommand>(null, success: false, message: "Failed to update the alias command");
+		}
+
+		public async Task<ServiceResponse<AliasCommand>> DeleteAliasCommandAsync(ulong guildId, string command)
+		{
+			var existingEnforcement = await GetAliasCommandByCommandAsync(guildId, command);
+			if (existingEnforcement?.ServiceObject == null)
+			{
+				return new ServiceResponse<AliasCommand>(null, success: false, message: "Alias command is not setup");
+			}
+
+			var dbResponse = await _aliasCommandRepository.DeleteAliasCommandAsync(existingEnforcement.ServiceObject);
+			if (dbResponse != null)
+			{
+				return new ServiceResponse<AliasCommand>(dbResponse);
+			}
+			return new ServiceResponse<AliasCommand>(null, success: false, message: "Failed to delete the alias command");
+		}
 		#endregion
 	}
 }

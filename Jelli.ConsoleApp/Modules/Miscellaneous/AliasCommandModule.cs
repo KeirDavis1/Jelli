@@ -26,7 +26,7 @@ namespace Jelli.ConsoleApp.Modules.Miscellaneous
 
 		#region Methods
 		[Command("create")]
-		[Alias("new", "add")]
+		[Alias("new", "add", "+", "c")]
 		[RequireUserPermission(GuildPermission.ManageChannels)]
 		public async Task AliasCommandCreateAsync(string command, [Remainder] string aliasTo)
 		{
@@ -44,6 +44,58 @@ namespace Jelli.ConsoleApp.Modules.Miscellaneous
 				}
 				// Let the user know the command was created
 				await ReplyAsync("Alias command created");
+			}
+			catch (Exception)
+			{
+				await ReplyAsync("Failed to execute alias command");
+			}
+		}
+
+		[Command("edit")]
+		[Alias("alter", "~", "e")]
+		[RequireUserPermission(GuildPermission.ManageChannels)]
+		public async Task AliasCommandEditAsync(string command, [Remainder] string aliasTo)
+		{
+			try
+			{
+				// Create the custom command with the response
+				var serviceResponse = await _guildService.EditAliasCommandAsync(Context.Guild.Id, command, aliasTo);
+
+				// Did the response succeed?
+				if (!serviceResponse.Success)
+				{
+					// Created failed, let the user know.
+					await ReplyAsync("Failed to edit alias command at this time");
+					return;
+				}
+				// Let the user know the command was created
+				await ReplyAsync("Alias command edited");
+			}
+			catch (Exception)
+			{
+				await ReplyAsync("Failed to execute alias command");
+			}
+		}
+
+		[Command("delete")]
+		[Alias("remove", "-", "r")]
+		[RequireUserPermission(GuildPermission.ManageChannels)]
+		public async Task AliasCommandDeleteAsync(string command)
+		{
+			try
+			{
+				// Create the custom command with the response
+				var serviceResponse = await _guildService.DeleteAliasCommandAsync(Context.Guild.Id, command);
+
+				// Did the response succeed?
+				if (!serviceResponse.Success)
+				{
+					// Created failed, let the user know.
+					await ReplyAsync("Failed to delete alias command at this time");
+					return;
+				}
+				// Let the user know the command was created
+				await ReplyAsync("Alias command deleted");
 			}
 			catch (Exception)
 			{

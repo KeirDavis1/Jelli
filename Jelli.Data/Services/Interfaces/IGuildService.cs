@@ -43,6 +43,11 @@ namespace Jelli.Data.Services.Interfaces
 		Task<ServiceResponse<AliasCommand>> GetAliasCommandByCommandAsync(ulong guildId, string command);
 
 		Task<ServiceResponse<AliasCommand>> CreateAliasCommandAsync(ulong guildId, string command, string aliasTo);
+
+		Task<ServiceResponse<AliasCommand>> EditAliasCommandAsync(ulong guildId, string command, string aliasTo);
+
+		Task<ServiceResponse<AliasCommand>> DeleteAliasCommandAsync(ulong guildId, string command);
+
 	}
 }
 
