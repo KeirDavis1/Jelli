@@ -82,6 +82,7 @@ namespace Jelli.ConsoleApp
 					.AddSingleton<CommandHandlingService>()
 					.AddSingleton<ChannelEnforcerService>()
 					.AddSingleton<StaticReplyService>()
+					.AddSingleton<DiscordDisconnectService>()
 					.AddSingleton<RichPresenceService>()
 					.AddSingleton<InteractiveService>()
 					.AddMemoryCache()

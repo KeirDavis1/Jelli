@@ -6,6 +6,7 @@ namespace Jelli.ConsoleApp.Types
 	{
 		#region Properties
 		private DateTime _startTime { get; set; }
+		public int DiscordDisconnects { get; set; }
 		#endregion
 
 		#region Constructor
